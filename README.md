@@ -1,4 +1,4 @@
-# CMS System using Django
+# CMS using Django
 This is a custom Content Management System (CMS) built using Django. It allows users to create, manage, and publish content efficiently with a user-friendly interface.
 ## Requirements
 - Python 3.10
