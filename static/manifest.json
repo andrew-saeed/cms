@@ -1,0 +1,13 @@
+{
+  "src/main.js": {
+    "file": "C1DngSxW.js",
+    "name": "main",
+    "src": "src/main.js",
+    "isEntry": true
+  },
+  "src/style.css": {
+    "file": "DiIOXZT-.css",
+    "src": "src/style.css",
+    "isEntry": true
+  }
+}
