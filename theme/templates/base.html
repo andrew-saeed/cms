@@ -22,9 +22,12 @@
     </head>
     <body class="bg-black text-base text-primary-text">
 
-        {% include 'partials/header.html' %}
-        
-        {% block content %}
-        {% endblock %}
+        <div class="layout min-h-svh flex flex-col justify-center items-center">
+
+            {% include 'partials/nav.html' %}
+            
+            {% block content %}
+            {% endblock %}
+        </div>
     </body>
 </html>
