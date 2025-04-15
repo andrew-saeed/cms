@@ -40,4 +40,57 @@
   --color-secondary-hover: #63627fbf;
 }
 
-@layer components {}
+@layer base {
+
+  form {
+    font-size: var(--text-base-1);
+    line-height: var(--text-base--line-height);
+
+    input {
+      border:0.1rem solid var(--color-primary-text);
+      border-radius: .25rem;
+      padding: 0.5rem;
+    }
+
+    label {
+      text-transform: capitalize;
+      font-weight: bold;
+    }
+  }
+}
+
+@layer components {
+
+  .form-group {
+    margin-top: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .form-actions {
+    margin-top: 1rem;
+    text-align: end;
+  }
+  .errorlist {
+    color: var(--color-red-600);
+  }
+
+  .btn {
+    border-radius: 0.25rem;
+    padding: 0.4rem 1rem;
+    display: inline-block;
+    font-size: var(--text-base-1);
+    font-weight: bold;
+    line-height: var(--text-base-1--line-height);
+    text-transform: capitalize;
+    cursor: pointer;
+
+    &.btn--blue {
+      background-color: var(--color-blue-700);
+
+      &:hover {
+        background-color: var(--color-blue-500);
+      }
+    }
+  }
+}

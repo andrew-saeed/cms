@@ -22,12 +22,24 @@
     </head>
     <body class="bg-black text-base text-primary-text">
 
-        <div class="layout min-h-svh flex flex-col justify-center items-center">
+        <div class="layout min-h-svh flex justify-center items-center">
 
-            {% include 'partials/nav.html' %}
-            
-            {% block content %}
-            {% endblock %}
+            <div class="layout-box w-full max-w-3xl px-2 py-4">
+
+                <header>
+                    <nav class="flex items-center justify-between">
+                        <img src="/media/logo.svg" alt="logo">
+                        <ul>
+                            <li><a class="capitalize font-bold underline underline-offset-2" href="/">home</a></li>
+                        </ul>
+                    </nav>
+                    <h1 class="mt-4 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
+                </header>
+                
+                <main class="mt-8">
+                    {% block content %}{% endblock %}
+                </main>
+            </div>
         </div>
     </body>
 </html>
