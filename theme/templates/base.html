@@ -27,13 +27,39 @@
             <div class="layout-box w-full max-w-3xl px-2 py-4">
 
                 <header>
-                    <nav class="flex items-center justify-between">
-                        <img src="/media/logo.svg" alt="logo">
-                        <ul>
-                            <li><a class="capitalize font-bold underline underline-offset-2" href="/">home</a></li>
-                        </ul>
+                    <nav 
+                        x-data="nav" 
+                        class="grid grid-cols-[max-content_1fr] grid-rows-[min-content_min-content] items-center
+                        md:grid-cols-[max-content_1fr_max-content] md:grid-rows-1"
+                    >
+                        <div class="flex gap-2 col-start-1 col-end-2 row-start-1 row-end-2">
+                            <svg @click="toggle()" class="icon-btn border border-white rounded-sm hover:bg-hover-bg min-md:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
+                            </svg>
+                            <img src="/media/logo.svg" alt="logo">
+                        </div>
+                        <div class="links-list
+                            col-start-1 col-end-3 row-start-2 row-end-3 
+                            transition-[max-height] ease-in-out 
+                            overflow-hidden
+                            md:px-4
+                            md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-2 md:!max-h-full"
+                        >
+                            <ul class="py-2 max-md:space-y-2 md:flex md:gap-2 md:items-center">
+                                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/">home</a></li>
+                                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/posts/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/posts">posts</a></li>
+                                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/about/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/about">about</a></li>
+                            </ul>
+                        </div>
+                        <div 
+                            class="col-start-2 col-end-3 row-start-1 row-end-2 justify-self-end
+                            md:col-start-3 md:col-end-4"
+                        >
+                            <a class="btn btn--flat" href="/account/login">login</a>
+                            <a class="btn btn--blue" href="/account/register">sign up</a>
+                        </div>
                     </nav>
-                    <h1 class="mt-4 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
+                    <h1 class="mt-12 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
                 </header>
                 
                 <main class="mt-8">
