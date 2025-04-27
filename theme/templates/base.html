@@ -33,7 +33,7 @@
                         md:grid-cols-[max-content_1fr_max-content] md:grid-rows-1"
                     >
                         <div class="flex gap-2 col-start-1 col-end-2 row-start-1 row-end-2">
-                            <svg @click="toggle()" class="icon-btn border border-white rounded-sm hover:bg-hover-bg min-md:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" fill="none" viewBox="0 0 24 24">
+                            <svg @click="toggle()" class="btn btn--icon min-md:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
                             </svg>
                             <img src="/media/logo.svg" alt="logo">
@@ -51,13 +51,21 @@
                                 <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/about/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/about">about</a></li>
                             </ul>
                         </div>
-                        <div 
-                            class="col-start-2 col-end-3 row-start-1 row-end-2 justify-self-end
-                            md:col-start-3 md:col-end-4"
-                        >
-                            <a class="btn btn--flat" href="{% url 'account:login' %}">login</a>
-                            <a class="btn btn--blue" href="/account/register">sign up</a>
-                        </div>
+
+                        {% if request.user.is_authenticated %}
+                            <form method="POST" action="{% url 'account:logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn--flat">logout</button>
+                            </form>
+                        {% else %}
+                            <div 
+                                class="col-start-2 col-end-3 row-start-1 row-end-2 justify-self-end
+                                md:col-start-3 md:col-end-4"
+                            >
+                                <a class="btn btn--flat" href="{% url 'account:login' %}">login</a>
+                                <a class="btn btn--blue" href="/account/register">sign up</a>
+                            </div>
+                        {% endif %}
                     </nav>
                     <h1 class="mt-12 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
                 </header>

@@ -149,3 +149,4 @@ if ENABLE_DEBUG_TOOLBAR:
 
 LOGIN_REDIRECT_URL = '/account/dashboard'
 LOGIN_URL = '/account/login'
+LOGOUT_URL = '/account/logout'
