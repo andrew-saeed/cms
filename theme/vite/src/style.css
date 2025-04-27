@@ -84,7 +84,13 @@
     font-weight: bold;
     line-height: var(--text-base-1--line-height);
     text-transform: capitalize;
+    text-align: center;
     cursor: pointer;
+
+    &.btn--small {
+      font-size: var(--text-base);
+      line-height: var(--text-base--line-height);
+    }
 
     &.btn--icon {
       border: 1px solid var(--color-primary-border);
@@ -111,3 +117,6 @@
     }
   }
 }
+
+/* Alpinejs */
+[x-cloak] { display: none !important; }

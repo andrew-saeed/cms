@@ -3,6 +3,17 @@ import Alpinejs from 'alpinejs'
 document.addEventListener('alpine:init', () => {
 
     const navLinksList = document.querySelector('.links-list')
+    const avatarMenu = document.querySelector('.avatar-menu')
+
+    Alpinejs.data('avatar', () => ({
+
+        open: false,
+
+        toggle() {
+            this.open = !this.open
+        }
+
+    }))
 
     Alpinejs.data('nav', () => ({
 
