@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .forms import UserRegistrationForm
+from django.contrib.auth.decorators import login_required
 
 def register(request):
     if request.method == 'POST':
@@ -13,5 +14,6 @@ def register(request):
         user_form = UserRegistrationForm()
     return render(request, 'account.register.html', {'user_form':user_form})
 
-def login(request):
-    return render(request, 'account.login.html')
+@login_required
+def dashboard(request):
+    return render(request, 'account.dashboard.html')
