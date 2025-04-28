@@ -1,0 +1,41 @@
+{% load vite_tags %}
+{% vite_css_vendors as css_vendors %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% if debug %}
+            <!-- Development: Load Vite Dev Server scripts -->
+            <script type="module" src="http://localhost:4200/@vite/client"></script>
+            <script type="module" src="http://localhost:4200/src/main.js"></script>
+            <link rel="stylesheet" href="http://localhost:4200/src/style.css">
+        {% else %}
+            <!-- Production: Load built assets from manifest -->
+            <script type="module" src="{% vite_asset 'src/main.js' %}"></script>
+            <link rel="stylesheet" href="{% vite_asset 'src/style.css' %}">
+            {% for style in css_vendors %}
+                <link rel="stylesheet" href="{{style}}">
+            {% endfor %}
+        {% endif %}
+    </head>
+    <body class="bg-black text-base text-primary-text">
+
+        <div class="layout min-h-svh flex justify-center items-center">
+
+            <div class="layout-box px-2 py-4 w-full max-w-3xl">
+                
+                <main class="mt-8 border border-primary-border rounded-md p-4 grid min-md:grid-cols-2 grid-rows-1 gap-4 bg-primary-bg">
+                    <div class="overflow-hidden max-md:hidden">
+                        <div style="background-image: url('/media/logo.svg');" class="-my-4 -ml-8 h-full bg-center rotate-12 opacity-5"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
+                        {% block content %}{% endblock %}
+                    </div>
+                </main>
+            </div>
+        </div>
+    </body>
+</html>

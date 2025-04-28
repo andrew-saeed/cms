@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "layout.account.html" %}
 
 {% block title %}register{% endblock %}
 {% block page-header %}create your account{% endblock %}
@@ -39,8 +39,12 @@
 
         {% csrf_token %}
 
+        <div class="form-actions text-center">
+            <a class="btn btn--link btn--small" href="{% url 'account:login' %}">Have account - Sign in</a>
+        </div>
+
         <div class="form-actions">
-            <button class="btn btn--blue" type="submit">create</button>
+            <button class="btn btn--blue w-full" type="submit">create</button>
         </div>
     </form>
 {% endblock %}

@@ -25,8 +25,9 @@
         <div class="layout min-h-svh flex justify-center items-center">
 
             <div class="layout-box w-full max-w-3xl px-2 py-4">
-
+                
                 <header>
+                    
                     <nav 
                         x-data="nav" 
                         class="grid grid-cols-[max-content_1fr] grid-rows-[min-content_min-content] items-center
@@ -51,7 +52,7 @@
                                 <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/about/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/about">about</a></li>
                             </ul>
                         </div>
-
+                
                         {% if request.user.is_authenticated %}
                             <div class="avatar-menu relative justify-self-end cursor-pointer" x-data="avatar">
                                 <div class="avatar-menu__trigger flex items-end gap-1" @click="toggle()" @click.outside="open = false">
@@ -90,7 +91,7 @@
                             </div>
                         {% endif %}
                     </nav>
-
+                
                     <h1 class="mt-12 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
                 </header>
                 

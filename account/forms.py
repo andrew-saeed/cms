@@ -5,7 +5,7 @@ class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label='password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='password confirmation', widget=forms.PasswordInput)
     email = forms.EmailField(label='email', required=True)
-    first_name = forms.CharField(label='name',required=True)
+    first_name = forms.CharField(label='name', required=True, widget=forms.TextInput(attrs={'autofocus': 'autofocus'}))
 
     class Meta:
         model = get_user_model()

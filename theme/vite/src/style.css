@@ -50,6 +50,7 @@
       border:1px solid var(--color-tertiary-text);
       border-radius: .25rem;
       padding: 0.5rem;
+      width: 100%;
     }
 
     label {
@@ -88,6 +89,7 @@
     cursor: pointer;
 
     &.btn--small {
+      padding: 0.2rem 0.8rem;
       font-size: var(--text-base);
       line-height: var(--text-base--line-height);
     }
@@ -99,6 +101,14 @@
       &:hover {
         background-color: var(--color-hover-bg);
       }
+    }
+
+    &.btn--link {
+      background-color: unset;
+      text-decoration: underline;
+      text-underline-offset: 0.2rem;
+      font-weight: 400;
+      text-transform: none;
     }
 
     &.btn--flat {

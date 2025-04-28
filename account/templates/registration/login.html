@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "layout.account.html" %}
 
 {% block title %}login{% endblock %}
 {% block page-header %}sign in{% endblock %}
@@ -6,7 +6,7 @@
 {% block content %}
 
     <form method="POST" novalidate>
-        
+    
         <div class="form-group">
             <label for="{{form.username.id_for_label}}">{{form.username.label}}</label>
             {{form.username}}
@@ -23,13 +23,17 @@
 
         <input type="hidden" name="next" value="{{ next }}" />
 
-        <div class="form-actions text-end">
-            <a class="link with-underline capitalize" href="{% url 'account:password_reset' %}">forgot password?</a>
+        <div class="form-actions text-center">
+            <div>
+                <a class="btn btn--link btn--small" href="{% url 'account:password_reset' %}">Forgot password?</a>
+            </div>
+            <div>
+                <a class="btn btn--link btn--small" href="{% url 'account:register' %}">Don't have account - create one</a>
+            </div>
         </div>
 
         <div class="form-actions">
-            <button class="btn btn--blue" type="submit">sign in</button>
+            <button class="btn btn--blue w-full" type="submit">sign in</button>
         </div>
     </form>
-
 {% endblock %}
