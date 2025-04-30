@@ -69,6 +69,9 @@
     gap: 0.5rem;
 
     .errorlist {
+      font-size: var(--text-base);
+      line-height: var(--text-base--line-height);
+      font-weight: thin;
       color: var(--color-red-600);
     }
   }
@@ -87,6 +90,12 @@
     text-transform: capitalize;
     text-align: center;
     cursor: pointer;
+
+    &.btn--xsmall {
+      padding: 0.2rem 0.8rem;
+      font-size: var(--text-sm);
+      line-height: var(--text-sm--line-height);
+    }
 
     &.btn--small {
       padding: 0.2rem 0.8rem;
