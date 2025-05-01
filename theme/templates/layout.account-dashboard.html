@@ -1,0 +1,104 @@
+{% load vite_tags %}
+{% vite_css_vendors as css_vendors %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% if debug %}
+            <!-- Development: Load Vite Dev Server scripts -->
+            <script type="module" src="http://localhost:4200/@vite/client"></script>
+            <script type="module" src="http://localhost:4200/src/main.js"></script>
+            <link rel="stylesheet" href="http://localhost:4200/src/style.css">
+        {% else %}
+            <!-- Production: Load built assets from manifest -->
+            <script type="module" src="{% vite_asset 'src/main.js' %}"></script>
+            <link rel="stylesheet" href="{% vite_asset 'src/style.css' %}">
+            {% for style in css_vendors %}
+                <link rel="stylesheet" href="{{style}}">
+            {% endfor %}
+        {% endif %}
+    </head>
+    <body class="bg-black text-base text-primary-text">
+
+        <div class="layout min-h-svh flex justify-center items-center">
+
+            <div class="layout-box w-full max-w-3xl px-2 py-4">
+                
+                <header>
+                    
+                    <nav 
+                        x-data="nav" 
+                        class="grid grid-cols-[max-content_1fr] grid-rows-[min-content_min-content] items-center
+                        md:grid-cols-[max-content_1fr_max-content] md:grid-rows-1"
+                    >
+                        <div class="flex gap-2 col-start-1 col-end-2 row-start-1 row-end-2">
+                            <svg @click="toggle()" class="btn btn--icon min-md:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
+                            </svg>
+                            <img src="/media/logo.svg" alt="logo">
+                        </div>
+                        <div class="links-list
+                            col-start-1 col-end-3 row-start-2 row-end-3 
+                            transition-[max-height] ease-in-out 
+                            overflow-hidden
+                            md:px-4
+                            md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-2 md:!max-h-full"
+                        >
+                            <ul class="py-2 max-md:space-y-2 md:flex md:gap-2 md:items-center">
+                                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/">home</a></li>
+                                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/posts/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/posts">posts</a></li>
+                                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/about/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/about">about</a></li>
+                            </ul>
+                        </div>
+                
+                        {% if request.user.is_authenticated %}
+                            <div class="avatar-menu relative justify-self-end cursor-pointer" x-data="avatar">
+                                <div class="avatar-menu__trigger flex items-end gap-1" @click="toggle()" @click.outside="open = false">
+                                    <svg class="-mr-2 rotate-50" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                        <g id="SVGRepo_iconCarrier"> 
+                                            <path d="M17.9188 8.17969H11.6888H6.07877C5.11877 8.17969 4.63877 9.33969 5.31877 10.0197L10.4988 15.1997C11.3288 16.0297 12.6788 16.0297 13.5088 15.1997L15.4788 13.2297L18.6888 10.0197C19.3588 9.33969 18.8788 8.17969 17.9188 8.17969Z" class="fill-white"></path> 
+                                        </g>
+                                    </svg>
+                                    <div class="w-[2.5rem] h-[2.5rem] rounded-full bg-white"></div>
+                                </div>
+                                <ul class="absolute top-full right-full 
+                                    w-[10.625rem] rounded-md border border-primary-border p-2 bg-primary-bg
+                                    divide-y-1 divide-[#34373c]"
+                                    x-cloak x-show="open"
+                                >
+                                    <li>
+                                        <a class="btn btn--flat btn--small w-full rounded-none" href="{% url 'account:dashboard' %}">dashboard</a>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{% url 'account:logout' %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn--flat btn--small w-full rounded-none">logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <div 
+                                class="col-start-2 col-end-3 row-start-1 row-end-2 justify-self-end
+                                md:col-start-3 md:col-end-4"
+                            >
+                                <a class="btn btn--flat" href="{% url 'account:login' %}">login</a>
+                                <a class="btn btn--blue" href="/account/register">sign up</a>
+                            </div>
+                        {% endif %}
+                    </nav>
+                
+                    <h1 class="mt-12 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
+                </header>
+                
+                <main class="mt-8">
+                    {% block content %}{% endblock %}
+                </main>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,6 +1,10 @@
-{% extends "layout.account.html" %}
+{% extends "layout.account-notification.html" %}
 
 {% block title %}logged out{% endblock %}
-{% block page-header %}you logged out.{% endblock %}
+{% block page-header %}logged out.{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+    <section class="flex justify-center">
+        <a class="btn btn--blue" href="/">continue</a>
+    </section>
+{% endblock %}

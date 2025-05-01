@@ -1,10 +1,10 @@
-{% extends "layout.account.html" %}
+{% extends "layout.account-notification.html" %}
 
 {% block title %}register done{% endblock %}
 {% block page-header %}your account was created successfully.{% endblock %}
 
 {% block content %}
-    <section class="text-base-1 ">
+    <section class="flex justify-center">
         <a class="btn btn--blue" href="{% url 'account:login'%}">sign in</a>
     </section>
 {% endblock %}
