@@ -19,3 +19,7 @@ def register(request):
 @login_required
 def dashboard(request):
     return render(request, 'account.dashboard.html')
+
+@login_required
+def profile(request):
+    return render(request, 'account.profile.html')

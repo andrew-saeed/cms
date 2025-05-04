@@ -39,14 +39,16 @@
                 ></div>
             </div>
             <ul class="absolute top-full right-full 
-                w-[10.625rem] rounded-md border border-primary-border p-2 bg-primary-bg
-                divide-y-1 divide-[#34373c]"
+                w-[10.625rem] rounded-md border border-primary-border p-2 bg-primary-bg"
                 x-cloak x-show="open"
             >
                 <li>
-                    <a class="btn btn--flat btn--small w-full rounded-none" href="{% url 'account:dashboard' %}">dashboard</a>
+                    <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'account:dashboard' %}">dashboard</a>
                 </li>
                 <li>
+                    <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'account:profile' %}">profile</a>
+                </li>
+                <li class="mt-4 border-t border-[#34373c]">
                     <form method="POST" action="{% url 'account:logout' %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn--flat btn--small w-full rounded-none">logout</button>
