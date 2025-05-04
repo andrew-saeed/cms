@@ -8,6 +8,7 @@ django = "==5.1.7"
 python-decouple = "*"
 mysqlclient = "*"
 django-debug-toolbar = "*"
+pillow = "*"
 
 [dev-packages]
 
