@@ -1,11 +1,14 @@
-import Alpinejs from 'alpinejs'
+import Alpine from 'alpinejs'
+import flatpickr from 'flatpickr'
+
+import 'flatpickr/dist/flatpickr.css'
+import 'flatpickr/dist/themes/dark.css'
 
 document.addEventListener('alpine:init', () => {
 
     const navLinksList = document.querySelector('.links-list')
-    const avatarMenu = document.querySelector('.avatar-menu')
 
-    Alpinejs.data('avatar', () => ({
+    Alpine.data('avatar', () => ({
 
         open: false,
 
@@ -15,7 +18,7 @@ document.addEventListener('alpine:init', () => {
 
     }))
 
-    Alpinejs.data('nav', () => ({
+    Alpine.data('nav', () => ({
 
         open: false,
 
@@ -31,6 +34,26 @@ document.addEventListener('alpine:init', () => {
             this.open = !this.open
         }
     }))
+
+    Alpine.data('profile', () => ({
+        init() {
+            flatpickr("#id_date_of_birth", {})
+
+            this.$refs.photoInput.addEventListener('change', (e) => {
+                const file = e.target.files[0]
+                if(file) {
+                    const reader = new FileReader()
+                    reader.onload = (e) => {
+                        this.$refs.photoImg.src = e.target.result
+                    }
+                    reader.readAsDataURL(file)
+                }
+            })
+        },
+        openPhotoImgInput() {
+            this.$refs.photoInput.click()
+        }
+    }))
 })
 
-Alpinejs.start()
+Alpine.start()

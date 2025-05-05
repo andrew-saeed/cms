@@ -1,10 +1,56 @@
 {% extends "layout.account-dashboard.html" %}
 
 {% block title %}profile{% endblock %}
-{% block page-header %}profile page{% endblock %}
+{% block page-header %}profile{% endblock %}
 
 {% block content %}
-    <section>
-        <p class="text-center">this is profile page</p>
-    </section>
+
+    <form action="{% url 'account:profile' %}" method="POST" enctype="multipart/form-data" novalidate>
+
+        <div class="form-group flex-row items-end gap-2 mt-0 mb-8" x-data="profile">
+            <div class="w-20 h-20 rounded-full overflow-hidden flex-none">
+                <img class="w-full" x-ref="photoImg" src="{{request.user.profile.get_photo_url}}" alt="{{request.user.username}}">
+            </div>
+            <div class="w-full capitalize p-2 border border-tertiary-bg cursor-pointer rounded-md" @click="openPhotoImgInput()">
+                <span class="bg-tertiary-bg py-1 px-2 rounded-md">change photo</span>
+            </div>
+            <input x-ref="photoInput" type="file" name="photo" id="id_photo" accept="image/*" class="hidden">
+        </div>
+        
+        <div class="form-group">
+            <label for="{{user_form.username.id_for_label}}">{{user_form.username.label}}</label>
+            {{user_form.username}}
+            {{user_form.username.errors}}
+        </div>
+
+        <div class="form-group">
+            <label for="{{user_form.first_name.id_for_label}}">{{user_form.first_name.label}}</label>
+            {{user_form.first_name}}
+            {{user_form.first_name.errors}}
+        </div>
+
+        <div class="form-group">
+            <label for="{{user_form.last_name.id_for_label}}">{{user_form.last_name.label}}</label>
+            {{user_form.last_name}}
+            {{user_form.last_name.errors}}
+        </div>
+
+        <div class="form-group">
+            <label for="{{user_form.email.id_for_label}}">{{user_form.email.label}}</label>
+            {{user_form.email}}
+            {{user_form.email.errors}}
+        </div>
+
+        <div class="form-group">
+            <label for="{{profile_form.date_of_birth.id_for_label}}">{{profile_form.date_of_birth.label}}</label>
+            {{profile_form.date_of_birth}}
+            {{profile_form.date_of_birth.errors}}
+        </div>
+
+        {% csrf_token %}
+
+        <div class="form-actions mt-8">
+            <button class="btn btn--blue w-full" type="submit">update</button>
+        </div>
+    </form>
 {% endblock %}

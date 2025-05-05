@@ -139,3 +139,31 @@
 
 /* Alpinejs */
 [x-cloak] { display: none !important; }
+
+/* Flatpickr Calendar Theme */
+.flatpickr-calendar {
+  max-width: 300px;
+  background-color: var(--color-primary-bg)!important;
+
+  .flatpickr-month, .flatpickr-monthDropdown-months, .flatpickr-monthDropdown-month, .flatpickr-weekdays .flatpickr-weekday {
+    background-color: var(--color-primary-bg)!important;
+  }
+
+  .flatpickr-monthDropdown-months {
+    option:hover {
+      opacity: 0;
+      background-color: var(--color-hover-bg)!important;
+    }
+  }
+
+  .flatpickr-day{
+
+    &.selected, &.selected:hover {
+      background-color: var(--color-secondary-bg);
+    }
+
+    &:hover {
+      background-color: var(--color-hover-bg);
+    }
+  }
+}
