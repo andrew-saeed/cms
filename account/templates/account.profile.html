@@ -1,13 +1,12 @@
-{% extends "layout.account-dashboard.html" %}
+{% extends "layout.account-profile.html" %}
 
 {% block title %}profile{% endblock %}
-{% block page-header %}profile{% endblock %}
 
 {% block content %}
 
     <form action="{% url 'account:profile' %}" method="POST" enctype="multipart/form-data" novalidate>
 
-        <div class="form-group flex-row items-end gap-2 mt-0 mb-8" x-data="profile">
+        <div class="form-group flex-row items-end gap-2 mt-0 mb-8" x-data="profileImage">
             <div class="w-20 h-20 rounded-full overflow-hidden flex-none">
                 <img class="w-full" x-ref="photoImg" src="{{request.user.profile.get_photo_url}}" alt="{{request.user.username}}">
             </div>

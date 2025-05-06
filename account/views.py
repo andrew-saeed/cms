@@ -17,6 +17,10 @@ def register(request):
     return render(request, 'account.register.html', {'user_form':user_form})
 
 @login_required
+def delete(request):
+    return render(request, 'account.delete.html')
+
+@login_required
 def dashboard(request):
     return render(request, 'account.dashboard.html')
 

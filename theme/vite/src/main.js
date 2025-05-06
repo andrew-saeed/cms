@@ -35,7 +35,7 @@ document.addEventListener('alpine:init', () => {
         }
     }))
 
-    Alpine.data('profile', () => ({
+    Alpine.data('profileImage', () => ({
         init() {
             flatpickr("#id_date_of_birth", {})
 
@@ -52,6 +52,15 @@ document.addEventListener('alpine:init', () => {
         },
         openPhotoImgInput() {
             this.$refs.photoInput.click()
+        }
+    }))
+
+    Alpine.data('linksDroplist', () => ({
+
+        open: false,
+
+        toggle() {
+            this.open = !this.open
         }
     }))
 })
