@@ -1,12 +1,15 @@
 {
   "src/main.js": {
-    "file": "BkThQBPT.js",
+    "file": "BOz2kVeF.js",
     "name": "main",
     "src": "src/main.js",
-    "isEntry": true
+    "isEntry": true,
+    "css": [
+      "BPdvD-bM.css"
+    ]
   },
   "src/style.css": {
-    "file": "W1mYRP3m.css",
+    "file": "F8XkYw_E.css",
     "src": "src/style.css",
     "isEntry": true
   }
