@@ -5,7 +5,7 @@
 
 {% block content %}
 
-    <form action="{% url 'account:register' %}" method="post" novalidate>
+    <form action="{% url 'register' %}" method="post" novalidate>
 
         <div class="form-group">
             <label for="{{user_form.first_name.id_for_label}}">{{user_form.first_name.label}}</label>
@@ -40,7 +40,7 @@
         {% csrf_token %}
 
         <div class="form-actions text-center">
-            <a class="btn btn--link btn--xsmall" href="{% url 'account:login' %}">Have account - Sign in</a>
+            <a class="btn btn--link btn--xsmall" href="{% url 'login' %}">Have account - Sign in</a>
         </div>
 
         <div class="form-actions">

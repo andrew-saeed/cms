@@ -6,9 +6,11 @@ import 'flatpickr/dist/themes/dark.css'
 
 document.addEventListener('alpine:init', () => {
 
+    flatpickr("#id_date_of_birth", {})
+
     const navLinksList = document.querySelector('.links-list')
 
-    Alpine.data('avatar', () => ({
+    Alpine.data('showToggler', () => ({
 
         open: false,
 
@@ -37,7 +39,6 @@ document.addEventListener('alpine:init', () => {
 
     Alpine.data('profileImage', () => ({
         init() {
-            flatpickr("#id_date_of_birth", {})
 
             this.$refs.photoInput.addEventListener('change', (e) => {
                 const file = e.target.files[0]
@@ -52,15 +53,6 @@ document.addEventListener('alpine:init', () => {
         },
         openPhotoImgInput() {
             this.$refs.photoInput.click()
-        }
-    }))
-
-    Alpine.data('linksDroplist', () => ({
-
-        open: false,
-
-        toggle() {
-            this.open = !this.open
         }
     }))
 })

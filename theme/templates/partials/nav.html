@@ -24,7 +24,7 @@
     </div>
 
     {% if request.user.is_authenticated %}
-        <div class="avatar-menu relative justify-self-end cursor-pointer" x-data="avatar">
+        <div class="avatar-menu relative justify-self-end cursor-pointer" x-data="showToggler">
             <div class="avatar-menu__trigger flex items-end gap-1" @click="toggle()" @click.outside="open = false">
                 <svg class="-mr-2 rotate-50" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -43,13 +43,13 @@
                 x-cloak x-show="open"
             >
                 <li>
-                    <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'account:dashboard' %}">dashboard</a>
+                    <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'dashboard' %}">dashboard</a>
                 </li>
                 <li>
-                    <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'account:profile' %}">profile</a>
+                    <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'profile' %}">profile</a>
                 </li>
                 <li class="mt-4 border-t border-[#34373c]">
-                    <form method="POST" action="{% url 'account:logout' %}">
+                    <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn--flat btn--small w-full rounded-none">logout</button>
                     </form>
@@ -61,7 +61,7 @@
             class="col-start-2 col-end-3 row-start-1 row-end-2 justify-self-end
             md:col-start-3 md:col-end-4"
         >
-            <a class="btn btn--flat" href="{% url 'account:login' %}">login</a>
+            <a class="btn btn--flat" href="{% url 'login' %}">login</a>
             <a class="btn btn--blue" href="/account/register">sign up</a>
         </div>
     {% endif %}
