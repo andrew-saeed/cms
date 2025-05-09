@@ -17,7 +17,13 @@ document.addEventListener('alpine:init', () => {
         toggle() {
             this.open = !this.open
         }
+    }))
 
+    Alpine.data('autofocusing', () => ({
+
+        init() {
+            this.$el.querySelector('input:not([type="hidden"])').focus()
+        }
     }))
 
     Alpine.data('nav', () => ({
