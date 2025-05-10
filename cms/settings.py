@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'andrewsaeed95.pythonanywhere.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'anymail',
     'account.apps.AccountConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -151,11 +152,9 @@ LOGIN_REDIRECT_URL = '/account/dashboard'
 LOGIN_URL = '/account/login'
 LOGOUT_URL = '/account/logout'
 
-# Mail
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_USE_TLS = True
-EMAIL_HOST = config('BREVO_EMAIL_HOST')
-EMAIL_PORT = config('BREVO_EMAIL_PORT')
-EMAIL_HOST_USER = config('BREVO_EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('BREVO_EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('BREVO_DEFAULT_FROM_EMAIL')
+# Anymail Brevo
+EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
+ANYMAIL = {
+    "BREVO_API_KEY": config('BREVO_API_KEY'),
+}
+DEFAULT_FROM_EMAIL = "box@django.cms"

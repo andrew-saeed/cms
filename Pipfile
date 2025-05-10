@@ -9,6 +9,7 @@ python-decouple = "*"
 mysqlclient = "*"
 django-debug-toolbar = "*"
 pillow = "*"
+django-anymail = "*"
 
 [dev-packages]
 
