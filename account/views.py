@@ -46,3 +46,7 @@ def profile(request):
         'user_form': user_form,
         'profile_form': profile_form
     })
+
+@login_required
+def notifications(request):
+    return render(request, 'account.notifications.html')
