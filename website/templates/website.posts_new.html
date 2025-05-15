@@ -4,7 +4,17 @@
 {% block page-header %}new post{% endblock %}
 
 {% block content %}
-    <section>
-        <p class="text-center">this is new post page</p>
+    <section class="relative">
+        <div id="markdown-editor"></div>
+        <div id="markdown-editor-ctrls" x-data>
+            <template x-teleport="body">
+                <div class="w-full sticky bottom-0 left-0 bg-primary-bg/70">
+                    <div class="mx-auto p-2 max-w-3xl flex justify-end gap-2">
+                        <button class="btn btn--blue btn--small">publish</button>
+                        <button class="btn btn--blue btn--small">save as draft</button>
+                    </div>
+                </div>
+            </template>
+        </div>
     </section>
 {% endblock %}

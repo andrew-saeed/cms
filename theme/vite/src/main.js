@@ -1,12 +1,32 @@
 import Alpine from 'alpinejs'
 import flatpickr from 'flatpickr'
+import Editor from '@toast-ui/editor'
 
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
+import '@toast-ui/editor/dist/toastui-editor.css'
+import '@toast-ui/editor/dist/theme/toastui-editor-dark.css'
 
-document.addEventListener('alpine:init', () => {
+document.body.onload = () => {
+
+    const markdownEditor = document.querySelector('#markdown-editor')
+
+    if(markdownEditor) {
+        
+        const editor = new Editor({
+            el: document.querySelector('#markdown-editor'),
+            height: '31.25rem',
+            initialEditType: 'markdown',
+            previewStyle: 'tab',
+            theme: 'dark',
+            hideModeSwitch: true
+        })
+    }
 
     flatpickr("#id_date_of_birth", {})
+}
+
+document.addEventListener('alpine:init', () => {
 
     const navLinksList = document.querySelector('.links-list')
 

@@ -17,6 +17,7 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.9",
     "@tailwindcss/vite": "^4.0.9",
+    "@toast-ui/editor": "^3.2.2",
     "alpinejs": "^3.14.9",
     "flatpickr": "^4.6.13",
     "tailwindcss": "^4.0.9"

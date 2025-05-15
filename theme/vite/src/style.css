@@ -168,3 +168,25 @@
     }
   }
 }
+
+/* Markdown Editor */
+#markdown-editor {
+
+  .toastui-editor-tabs {
+    display: flex;
+    gap: 0.4rem;
+
+    .tab-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-base);
+      line-height: var(--text-base--line-height);
+    }
+  }
+
+  .toastui-editor-dropdown-toolbar {
+    height: unset;
+    flex-direction: column;
+  }
+}
