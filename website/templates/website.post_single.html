@@ -1,0 +1,10 @@
+{% extends "layout.base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+{% block page-header %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <section>
+        <p>{{post.body}}</p>
+    </section>
+{% endblock %}
