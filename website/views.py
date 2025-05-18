@@ -1,5 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 
 from .models import Post
 
@@ -27,6 +29,20 @@ def post_single(request, year, month, day, slug):
 
 @login_required
 def posts_new(request):
+    title = request.POST.get('title')
+    body = request.POST.get('body')
+    status = Post.Status.PUBLISHED if request.POST.get('action') == Post.Status.PUBLISHED else Post.Status.DRAFT
+    if request.method == 'POST':
+        post = Post(
+            title=title,
+            slug=slugify(title),
+            body=body,
+            status=status,
+            author=request.user
+        )
+        post.save()
+        if status == Post.Status.PUBLISHED:
+            return JsonResponse({'url': post.get_absolute_url()})
     return render(request, 'website.posts_new.html')
 
 def about(request):

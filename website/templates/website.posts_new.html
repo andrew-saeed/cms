@@ -5,16 +5,25 @@
 
 {% block content %}
     <section class="relative">
-        <div id="markdown-editor"></div>
-        <div id="markdown-editor-ctrls" x-data>
-            <template x-teleport="body">
-                <div class="w-full sticky bottom-0 left-0 bg-primary-bg/70">
-                    <div class="mx-auto p-2 max-w-3xl flex justify-end gap-2">
-                        <button class="btn btn--blue btn--small">publish</button>
-                        <button class="btn btn--blue btn--small">save as draft</button>
+
+        <div x-data="newPostForm">
+
+            <div>
+                <input type="text" x-ref="title">
+            </div>
+
+            <div id="markdown-editor"></div>
+
+            <div id="ctrls" x-data>
+                <template x-teleport="body">
+                    <div class="w-full sticky bottom-0 left-0 bg-primary-bg/70">
+                        <div class="mx-auto p-2 max-w-3xl flex justify-end gap-2">
+                            <button @click="post('PB')" class="btn btn--blue btn--small">publish</button>
+                            <button @click="post('DR')" class="btn btn--blue btn--small">save as draft</button>
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
         </div>
     </section>
 {% endblock %}

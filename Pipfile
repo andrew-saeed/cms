@@ -10,6 +10,7 @@ mysqlclient = "*"
 django-debug-toolbar = "*"
 pillow = "*"
 django-anymail = "*"
+markdown = "*"
 
 [dev-packages]
 

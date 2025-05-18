@@ -1,6 +1,7 @@
 import Alpine from 'alpinejs'
 import flatpickr from 'flatpickr'
 import Editor from '@toast-ui/editor'
+import Cookies from 'js-cookie'
 
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
@@ -9,26 +10,13 @@ import '@toast-ui/editor/dist/theme/toastui-editor-dark.css'
 
 document.body.onload = () => {
 
-    const markdownEditor = document.querySelector('#markdown-editor')
-
-    if(markdownEditor) {
-        
-        const editor = new Editor({
-            el: document.querySelector('#markdown-editor'),
-            height: '31.25rem',
-            initialEditType: 'markdown',
-            previewStyle: 'tab',
-            theme: 'dark',
-            hideModeSwitch: true
-        })
-    }
-
     flatpickr("#id_date_of_birth", {})
 }
 
 document.addEventListener('alpine:init', () => {
 
     const navLinksList = document.querySelector('.links-list')
+    const csrftoken = Cookies.get('csrftoken')
 
     Alpine.data('showToggler', () => ({
 
@@ -79,6 +67,37 @@ document.addEventListener('alpine:init', () => {
         },
         openPhotoImgInput() {
             this.$refs.photoInput.click()
+        }
+    }))
+
+    Alpine.data('newPostForm', () => ({
+
+        editor: null,
+
+        init() {
+            this.editor = new Editor({
+                el: this.$el.querySelector('#markdown-editor'),
+                height: '31.25rem',
+                initialEditType: 'markdown',
+                previewStyle: 'tab',
+                theme: 'dark',
+                hideModeSwitch: true
+            })
+        },
+        async post(action) {
+            const formData = new FormData()
+            formData.append('action', action)
+            formData.append('title', this.$refs.title.value)
+            formData.append('body', this.editor.getMarkdown())
+
+            const res = await fetch('/posts/new', {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                mode:'same-origin',
+                body: formData
+            })
+            const data = await res.json()
+            window.location.assign(data.url)
         }
     }))
 })
