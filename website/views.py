@@ -9,20 +9,30 @@ def home(request):
     return render(request, 'website.home.html')
 
 def posts(request):
-    posts = Post.objects.all()
+    posts = Post.published.all()
     return render(request, 'website.posts.html', {
         'posts': posts
     })
 
 def post_single(request, year, month, day, slug):
-    post = get_object_or_404(
-        Post, 
-        status=Post.Status.PUBLISHED,
-        slug=slug,
-        publish__year=year,
-        publish__month=month,
-        publish__day=day,
-    )
+    if request.resolver_match.url_name == 'collection_post_single':
+        post = get_object_or_404(
+            Post,
+            author=request.user,
+            slug=slug,
+            publish__year=year,
+            publish__month=month,
+            publish__day=day,
+        )
+    elif request.resolver_match.url_name == 'post_single':
+        post = get_object_or_404(
+            Post,
+            status=Post.Status.PUBLISHED,
+            slug=slug,
+            publish__year=year,
+            publish__month=month,
+            publish__day=day,
+        )
     return render(request, 'website.post_single.html', {
         'post': post
     })
@@ -43,7 +53,13 @@ def posts_new(request):
         post.save()
         if status == Post.Status.PUBLISHED:
             return JsonResponse({'url': post.get_absolute_url()})
+        elif status == Post.Status.DRAFT:
+            return JsonResponse({'url': f'/collection{post.get_absolute_url()}'})
     return render(request, 'website.posts_new.html')
+
+@login_required
+def collection_post_edit(request):
+    return render(request, 'website.collection_post_edit.html')
 
 def about(request):
     return render(request, 'website.about.html')

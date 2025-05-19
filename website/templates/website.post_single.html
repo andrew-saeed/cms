@@ -6,6 +6,21 @@
 
 {% block content %}
     <section>
+        {% if request.resolver_match.url_name == 'collection_post_single' %}
+            {% if post.status == 'DR' %}
+                <div id="ctrls" x-data>
+                    <template x-teleport="body">
+                        <div class="w-full sticky bottom-0 left-0 bg-primary-bg/70">
+                            <div class="mx-auto p-2 max-w-3xl flex justify-end gap-2">
+                                <button @click="post('PB')" class="btn btn--blue btn--small">edit</button>
+                                <button @click="post('DR')" class="btn btn--blue btn--small">publish</button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            {% endif %}
+        {% endif %}
+
         <div id="markdown-text" class="px-4 py-6 rounded-md bg-primary-bg">{{ post.body|markdown }}</div>
     </section>
 {% endblock %}
