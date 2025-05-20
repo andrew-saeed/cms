@@ -69,8 +69,23 @@ def posts_new(request):
     return render(request, 'website.posts_new.html')
 
 @login_required
+def posts_edit(request, id):
+    post = get_object_or_404(Post, id=id, author=request.user)
+    if request.method == 'POST':
+        post.title = request.POST.get('title')
+        post.body = request.POST.get('body')
+        post.save()
+        if  post.status == post.Status.PUBLISHED:
+            return JsonResponse({'url': post.get_absolute_url()})
+        elif post.status == post.Status.DRAFT:
+            return JsonResponse({'url': f'/posts/{post.slug}'})
+    return render(request, 'website.posts_edit.html', {
+        'post': post
+    })
+
+@login_required
 def post_publish(request, id):
-    post = get_object_or_404(Post, id=id)
+    post = get_object_or_404(Post, id=id, author=request.user)
     post.status = Post.Status.PUBLISHED
     post.publish = timezone.now()
     post.save()

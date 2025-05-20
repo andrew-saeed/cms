@@ -100,6 +100,42 @@ document.addEventListener('alpine:init', () => {
             window.location.assign(data.url)
         }
     }))
+
+    Alpine.data('updatePostForm', () => ({
+
+        editor: null,
+        id: null,
+
+        init() {
+            this.id = this.$el.dataset.id
+            const markdownEditor = this.$el.querySelector('#markdown-editor')
+            this.editor = new Editor({
+                el: markdownEditor,
+                height: '31.25rem',
+                initialEditType: 'markdown',
+                previewStyle: 'tab',
+                theme: 'dark',
+                hideModeSwitch: true,
+                initialValue: markdownEditor.textContent.trim()
+            })
+        },
+        async update() {
+            const formData = new FormData()
+            formData.append('title', this.$refs.title.value)
+            formData.append('body', this.editor.getMarkdown())
+            const res = await fetch(`/posts/${this.id}/edit/`, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                mode:'same-origin',
+                body: formData
+            })
+            const data = await res.json()
+            window.location.assign(data.url)
+        },
+        cancel() {
+            history.back();
+        }
+    }))
 })
 
 Alpine.start()

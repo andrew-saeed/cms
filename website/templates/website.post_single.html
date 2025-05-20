@@ -11,10 +11,10 @@
                 <template x-teleport="body">
                     <div class="border-t border-primary-border sticky bottom-0 left-0 w-full bg-primary-bg/70">
                         <div class="mx-auto p-2 max-w-3xl flex justify-end gap-2">
-                            <button class="btn btn--blue btn--small">edit</button>
+                            <a href="{% url 'website:post_edit' id=post.id %}" class="btn btn--blue">edit</a>
                             <form action="{% url 'website:post_publish' id=post.id %}" method="POST">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn--blue btn--small">publish</button>
+                                <button type="submit" class="btn btn--blue">publish</button>
                             </form>
                         </div>
                     </div>

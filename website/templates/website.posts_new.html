@@ -1,7 +1,7 @@
 {% extends "layout.base.html" %}
 
 {% block title %}new post{% endblock %}
-{% block page-header %}new post{% endblock %}
+{% block page-header %}{% endblock %}
 
 {% block content %}
     <section class="relative">
@@ -9,17 +9,17 @@
         <div x-data="newPostForm">
 
             <div>
-                <input type="text" x-ref="title">
+                <input type="text" x-ref="title" class="my-12 p-2 border-b border-primary-border w-full text-large" placeholder="Title">
             </div>
 
             <div id="markdown-editor"></div>
 
             <div id="ctrls" x-data>
                 <template x-teleport="body">
-                    <div class="w-full sticky bottom-0 left-0 bg-primary-bg/70">
+                    <div class="border-t border-primary-border sticky bottom-0 left-0 w-full bg-primary-bg/70">
                         <div class="mx-auto p-2 max-w-3xl flex justify-end gap-2">
-                            <button @click="post('PB')" class="btn btn--blue btn--small">publish</button>
-                            <button @click="post('DR')" class="btn btn--blue btn--small">save as draft</button>
+                            <button @click="post('PB')" class="btn btn--blue">publish</button>
+                            <button @click="post('DR')" class="btn btn--blue">save as draft</button>
                         </div>
                     </div>
                 </template>

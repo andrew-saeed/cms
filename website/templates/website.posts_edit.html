@@ -1,0 +1,37 @@
+{% extends "layout.base.html" %}
+
+{% block title %}edit post{% endblock %}
+{% block page-header %}{% endblock %}
+
+{% block content %}
+    <section class="relative">
+
+        <div x-data="updatePostForm" data-id="{{post.id}}">
+
+            <div>
+                <input 
+                    type="text" 
+                    x-ref="title" 
+                    class="my-12 border-b border-primary-border w-full text-large" 
+                    placeholder="Title" 
+                    value="{{post.title}}"
+                >
+            </div>
+
+            <div id="markdown-editor">
+                {{post.body}}
+            </div>
+
+            <div id="ctrls" x-data>
+                <template x-teleport="body">
+                    <div class="border-t border-primary-border sticky bottom-0 left-0 w-full bg-primary-bg/70">
+                        <div class="mx-auto p-2 max-w-3xl flex justify-end gap-2">
+                            <button @click="cancel()" class="btn btn--blue">cancel</button>
+                            <button @click="update()" class="btn btn--blue">update</button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+{% endblock %}

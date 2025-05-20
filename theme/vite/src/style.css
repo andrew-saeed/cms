@@ -222,11 +222,14 @@
     opacity: 0.3;
   }
 
-  h2, h3 {
+  h2, h3, h4, h5, h6 {
     margin: 0.625rem 0rem;
   }
 
   ul, p {
     margin-bottom: 1.25rem;
   }
+}
+div:not(.toastui-editor-md-heading) {
+  font-size: var(--text-base);
 }
