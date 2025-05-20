@@ -1,104 +1,104 @@
-<nav 
-    x-data="nav" 
-    class="grid grid-cols-[max-content_1fr] grid-rows-[min-content_min-content] items-center
-    md:grid-cols-[max-content_1fr_max-content] md:grid-rows-1"
->
-    <div class="flex gap-2 col-start-1 col-end-2 row-start-1 row-end-2">
-        <svg @click="toggle()" class="btn btn--icon min-md:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
-        </svg>
-        <img src="/media/logo.svg" alt="logo">
-    </div>
-    <div class="links-list
-        col-start-1 col-end-3 row-start-2 row-end-3 
-        transition-[max-height] ease-in-out 
-        overflow-hidden
-        md:px-4
-        md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-2 md:!max-h-full"
+<nav x-data="nav" class="p-2 bg-primary-bg">
+    <div class="nav-layout layout-box grid grid-cols-[max-content_1fr] grid-rows-[min-content_min-content] items-center
+        md:grid-cols-[max-content_1fr_max-content] md:grid-rows-1"
     >
-        <ul class="py-2 max-md:space-y-2 md:flex md:gap-2 md:items-center">
-            <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/">home</a></li>
-            <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/posts/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/posts">posts</a></li>
-            <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/about/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/about">about</a></li>
-        </ul>
-    </div>
+        <div class="flex gap-2 col-start-1 col-end-2 row-start-1 row-end-2">
+            <svg @click="toggle()" class="btn btn--icon min-md:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
+            </svg>
+            <img src="/media/logo.svg" alt="logo">
+        </div>
+        <div class="links-list
+            col-start-1 col-end-3 row-start-2 row-end-3 
+            transition-[max-height] ease-in-out 
+            overflow-hidden
+            md:px-4
+            md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-2 md:!max-h-full"
+        >
+            <ul class="py-2 max-md:space-y-2 md:flex md:gap-2 md:items-center">
+                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/">home</a></li>
+                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/posts/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/posts">posts</a></li>
+                <li><a class="py-1 px-1 block w-full text-center capitalize {% if request.path == '/about/' %}font-bold underline{% endif %} underline-offset-2 hover:bg-hover-bg" href="/about">about</a></li>
+            </ul>
+        </div>
 
-    {% if request.user.is_authenticated %}
-        <div class="authed-user-ctrls flex gap-2 justify-end">
+        {% if request.user.is_authenticated %}
+            <div class="authed-user-ctrls flex gap-2 justify-end">
 
-            <a href="{% url 'website:posts_new' %}" class="btn btn--flat 
-                border border-blue-400 py-0 hidden text-blue-400 font-normal
-                hover:bg-blue-600 hover:text-primary-text
-                md:flex md:items-center md:justify-center"
-            >create post</a>
+                <a href="{% url 'website:posts_new' %}" class="btn btn--flat 
+                    border border-blue-400 py-0 hidden text-blue-400 font-normal
+                    hover:bg-blue-600 hover:text-primary-text
+                    md:flex md:items-center md:justify-center"
+                >create post</a>
 
-            <a href="{% url 'website:search' %}" aria-label="search">
-                <svg class="btn btn--icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier"> 
-                        <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> 
-                    </g>
-                </svg>
-            </a>
-
-            <a href="{% url 'notifications' %}" aria-label="notifications">
-                <svg class="btn btn--icon" viewBox="0 0 24 24" width="24px" height="24px" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier"> 
-                        <path d="M9.00195 17H5.60636C4.34793 17 3.71872 17 3.58633 16.9023C3.4376 16.7925 3.40126 16.7277 3.38515 16.5436C3.37082 16.3797 3.75646 15.7486 4.52776 14.4866C5.32411 13.1835 6.00031 11.2862 6.00031 8.6C6.00031 7.11479 6.63245 5.69041 7.75766 4.6402C8.88288 3.59 10.409 3 12.0003 3C13.5916 3 15.1177 3.59 16.2429 4.6402C17.3682 5.69041 18.0003 7.11479 18.0003 8.6C18.0003 11.2862 18.6765 13.1835 19.4729 14.4866C20.2441 15.7486 20.6298 16.3797 20.6155 16.5436C20.5994 16.7277 20.563 16.7925 20.4143 16.9023C20.2819 17 19.6527 17 18.3943 17H15.0003M9.00195 17L9.00031 18C9.00031 19.6569 10.3435 21 12.0003 21C13.6572 21 15.0003 19.6569 15.0003 18V17M9.00195 17H15.0003" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> 
-                    </g>
-                </svg>
-            </a>
-
-            <div class="avatar-menu relative justify-self-end cursor-pointer" x-data="showToggler">
-                <div class="avatar-menu__trigger flex items-end gap-1" @click="toggle()" @click.outside="open = false">
-                    <svg class="-mr-2 rotate-50" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <a href="{% url 'website:search' %}" aria-label="search">
+                    <svg class="btn btn--icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                         <g id="SVGRepo_iconCarrier"> 
-                            <path d="M17.9188 8.17969H11.6888H6.07877C5.11877 8.17969 4.63877 9.33969 5.31877 10.0197L10.4988 15.1997C11.3288 16.0297 12.6788 16.0297 13.5088 15.1997L15.4788 13.2297L18.6888 10.0197C19.3588 9.33969 18.8788 8.17969 17.9188 8.17969Z" class="fill-white"></path> 
+                            <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> 
                         </g>
                     </svg>
-                    <div 
-                        class="rounded-full p-4 w-[2.5rem] h-[2.5rem] bg-center bg-cover"
-                        style="background-image: url({{request.user.profile.get_photo_url}});"
-                    ></div>
+                </a>
+
+                <a href="{% url 'notifications' %}" aria-label="notifications">
+                    <svg class="btn btn--icon" viewBox="0 0 24 24" width="24px" height="24px" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier"> 
+                            <path d="M9.00195 17H5.60636C4.34793 17 3.71872 17 3.58633 16.9023C3.4376 16.7925 3.40126 16.7277 3.38515 16.5436C3.37082 16.3797 3.75646 15.7486 4.52776 14.4866C5.32411 13.1835 6.00031 11.2862 6.00031 8.6C6.00031 7.11479 6.63245 5.69041 7.75766 4.6402C8.88288 3.59 10.409 3 12.0003 3C13.5916 3 15.1177 3.59 16.2429 4.6402C17.3682 5.69041 18.0003 7.11479 18.0003 8.6C18.0003 11.2862 18.6765 13.1835 19.4729 14.4866C20.2441 15.7486 20.6298 16.3797 20.6155 16.5436C20.5994 16.7277 20.563 16.7925 20.4143 16.9023C20.2819 17 19.6527 17 18.3943 17H15.0003M9.00195 17L9.00031 18C9.00031 19.6569 10.3435 21 12.0003 21C13.6572 21 15.0003 19.6569 15.0003 18V17M9.00195 17H15.0003" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> 
+                        </g>
+                    </svg>
+                </a>
+
+                <div class="avatar-menu relative justify-self-end cursor-pointer" x-data="showToggler">
+                    <div class="avatar-menu__trigger flex items-end gap-1" @click="toggle()" @click.outside="open = false">
+                        <svg class="-mr-2 rotate-50" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier"> 
+                                <path d="M17.9188 8.17969H11.6888H6.07877C5.11877 8.17969 4.63877 9.33969 5.31877 10.0197L10.4988 15.1997C11.3288 16.0297 12.6788 16.0297 13.5088 15.1997L15.4788 13.2297L18.6888 10.0197C19.3588 9.33969 18.8788 8.17969 17.9188 8.17969Z" class="fill-white"></path> 
+                            </g>
+                        </svg>
+                        <div 
+                            class="rounded-full p-4 w-[2.5rem] h-[2.5rem] bg-center bg-cover"
+                            style="background-image: url({{request.user.profile.get_photo_url}});"
+                        ></div>
+                    </div>
+                    <ul class="absolute top-[125%] right-full z-10
+                        w-[10.625rem] rounded-md border border-primary-border p-2 bg-primary-bg"
+                        x-cloak x-show="open"
+                    >
+                        <li class="mb-4 md:mb-0">
+                            <a href="{% url 'website:posts_new' %}" class="btn btn--flat 
+                                border border-blue-400 py-0 flex items-center justify-center text-blue-400 font-normal
+                                hover:bg-blue-600 hover:text-primary-text
+                                md:hidden"
+                            >create post</a>
+                        </li>
+                        <li>
+                            <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'dashboard' %}">dashboard</a>
+                        </li>
+                        <li>
+                            <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'profile' %}">profile</a>
+                        </li>
+                        <li class="mt-4 border-t border-[#34373c]">
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn--flat btn--small w-full rounded-none">logout</button>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="absolute top-[125%] right-full z-10
-                    w-[10.625rem] rounded-md border border-primary-border p-2 bg-primary-bg"
-                    x-cloak x-show="open"
-                >
-                    <li class="mb-4 md:mb-0">
-                        <a href="{% url 'website:posts_new' %}" class="btn btn--flat 
-                            border border-blue-400 py-0 flex items-center justify-center text-blue-400 font-normal
-                            hover:bg-blue-600 hover:text-primary-text
-                            md:hidden"
-                        >create post</a>
-                    </li>
-                    <li>
-                        <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'dashboard' %}">dashboard</a>
-                    </li>
-                    <li>
-                        <a class="btn btn--flat btn--small w-full text-left rounded-none" href="{% url 'profile' %}">profile</a>
-                    </li>
-                    <li class="mt-4 border-t border-[#34373c]">
-                        <form method="POST" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn--flat btn--small w-full rounded-none">logout</button>
-                        </form>
-                    </li>
-                </ul>
             </div>
-        </div>
-    {% else %}
-        <div 
-            class="col-start-2 col-end-3 row-start-1 row-end-2 justify-self-end
-            md:col-start-3 md:col-end-4"
-        >
-            <a class="btn btn--flat" href="{% url 'login' %}">login</a>
-            <a class="btn btn--blue" href="/account/register">sign up</a>
-        </div>
-    {% endif %}
+        {% else %}
+            <div 
+                class="col-start-2 col-end-3 row-start-1 row-end-2 justify-self-end
+                md:col-start-3 md:col-end-4"
+            >
+                <a class="btn btn--flat" href="{% url 'login' %}">login</a>
+                <a class="btn btn--blue" href="/account/register">sign up</a>
+            </div>
+        {% endif %}
+    </div>
 </nav>

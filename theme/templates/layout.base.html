@@ -22,21 +22,24 @@
     </head>
     <body class="bg-black text-base text-primary-text">
 
-        <div class="layout min-h-svh flex justify-center items-center">
+        <div class="page-layout grid grid-rows-[min-content_1fr]">
 
-            <div class="layout-box w-full max-w-3xl px-2 py-4">
+            <header>
                 
-                <header>
-                    
-                    {% include 'partials/nav.html' %}
+                {% include 'partials/nav.html' %}
                 
-                    <h1 class="mt-12 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
-                </header>
-                
-                <main class="mt-8">
+                <div class="layout-box">
+                    <h1 x-data="removeEmptyHeader" class="mt-12 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
+                </div>
+            </header>
+            
+            <main class="mt-8">
+
+                <div class="layout-box">
+
                     {% block content %}{% endblock %}
-                </main>
-            </div>
+                </div>
+            </main>
         </div>
     </body>
 </html>

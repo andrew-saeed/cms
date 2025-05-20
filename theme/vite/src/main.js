@@ -18,6 +18,12 @@ document.addEventListener('alpine:init', () => {
     const navLinksList = document.querySelector('.links-list')
     const csrftoken = Cookies.get('csrftoken')
 
+    Alpine.data('removeEmptyHeader', () => ({
+        init() {
+            if(this.$el.innerText.length == 0) this.$el.remove()
+        }
+    }))
+
     Alpine.data('showToggler', () => ({
 
         open: false,

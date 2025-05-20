@@ -138,6 +138,10 @@
   }
 }
 
+@utility .layout-box {
+  @apply mx-auto max-w-3xl;
+}
+
 /* Alpinejs */
 [x-cloak] { display: none !important; }
 
