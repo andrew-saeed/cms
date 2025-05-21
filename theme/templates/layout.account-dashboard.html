@@ -1,26 +1,10 @@
-{% load vite_tags %}
-{% vite_css_vendors as css_vendors %}
 <!DOCTYPE html>
 <html>
     <head>
         <title>{% block title %}{% endblock %}</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% if debug %}
-            <!-- Development: Load Vite Dev Server scripts -->
-            <script type="module" src="http://localhost:4200/@vite/client"></script>
-            <script type="module" src="http://localhost:4200/src/main.js"></script>
-            <link rel="stylesheet" href="http://localhost:4200/src/style.css">
-        {% else %}
-            <!-- Production: Load built assets from manifest -->
-            <script type="module" src="{% vite_asset 'src/main.js' %}"></script>
-            <link rel="stylesheet" href="{% vite_asset 'src/style.css' %}">
-            {% for style in css_vendors %}
-                <link rel="stylesheet" href="{{style}}">
-            {% endfor %}
-        {% endif %}
+        {% include 'partials/headers.html' %}
     </head>
-    <body class="bg-black text-base text-primary-text">
+    <body class="bg-black text-base text-primary-text font-nunito">
 
         <div class="page-layout grid grid-rows-[min-content_1fr]">
   
@@ -33,7 +17,7 @@
                 </div>
             </header>
             
-            <main class="mt-8">
+            <main class="mt-12">
                 {% block content %}{% endblock %}
             </main>
         </div>

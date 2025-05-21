@@ -27,6 +27,11 @@
   --text-large: 3rem;
   --text-large--line-height: 3.75rem;
 
+  --font-nunito: "Nunito", sans-serif;
+  --font-nunito--font-optical-sizing: auto;
+  --font-nunito--font-weight: 400;
+  --font-nunito--font-style: normal;
+
   --color-primary-bg: #171717;
   --color-secondary-bg: var(--color-gray-800);
   --color-tertiary-bg: var(--color-gray-700);
@@ -138,8 +143,11 @@
   }
 }
 
-@utility .layout-box {
-  @apply mx-auto max-w-3xl;
+@layer utilities {
+
+  .layout-box {
+    @apply mx-auto max-w-3xl;
+  }
 }
 
 /* Alpinejs */
@@ -227,6 +235,7 @@
   }
 
   h2, h3, h4, h5, h6 {
+    font-weight: bold;
     margin: 0.625rem 0rem;
   }
 
