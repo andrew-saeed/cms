@@ -1,15 +1,26 @@
 {
+  "_D9Wy9voJ.css": {
+    "file": "D9Wy9voJ.css",
+    "src": "_D9Wy9voJ.css"
+  },
+  "_vendor.s2Y4qQG_.js": {
+    "file": "vendor.s2Y4qQG_.js",
+    "name": "vendor",
+    "css": [
+      "D9Wy9voJ.css"
+    ]
+  },
   "src/main.js": {
-    "file": "BvUaOyP4.js",
+    "file": "P1REojO4.js",
     "name": "main",
     "src": "src/main.js",
     "isEntry": true,
-    "css": [
-      "BPdvD-bM.css"
+    "imports": [
+      "_vendor.s2Y4qQG_.js"
     ]
   },
   "src/style.css": {
-    "file": "F8XkYw_E.css",
+    "file": "xo1GiVU2.css",
     "src": "src/style.css",
     "isEntry": true
   }

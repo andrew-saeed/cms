@@ -1,5 +1,5 @@
 import path from 'path'
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 
 const ROOT = path.resolve('')
@@ -24,6 +24,10 @@ export default defineConfig({
             output: {
                 entryFileNames: '[hash].js',
                 assetFileNames: '[hash].[ext]',
+                chunkFileNames: '[name].[hash].js',
+                manualChunks(id) {
+                    if (id.includes('node_modules')) return 'vendor'
+                },
             }
         },
     },

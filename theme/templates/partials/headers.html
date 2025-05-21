@@ -1,5 +1,6 @@
 {% load vite_tags %}
-{% vite_css_vendors as css_vendors %}
+{% vite_all_css as all_css %}
+{% vite_all_js as all_js %}
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +12,10 @@
     <link rel="stylesheet" href="http://localhost:4200/src/style.css">
 {% else %}
     <!-- Production: Load built assets from manifest -->
-    <script type="module" src="{% vite_asset 'src/main.js' %}"></script>
-    <link rel="stylesheet" href="{% vite_asset 'src/style.css' %}">
-    {% for style in css_vendors %}
-        <link rel="stylesheet" href="{{style}}">
+    {% for css in all_css %}
+        <link rel="stylesheet" href="{{ css }}">
+    {% endfor %}
+    {% for js in all_js %}
+        <script type="module" src="{{ js }}"></script>
     {% endfor %}
 {% endif %}

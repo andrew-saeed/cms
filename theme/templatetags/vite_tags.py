@@ -6,23 +6,44 @@ from django import template
 register = template.Library()
 manifest_file = settings.BASE_DIR / 'static' / 'manifest.json'
 
+def load_manifest():
+    with open(manifest_file) as f:
+        return json.load(f)
+    
 @register.simple_tag
-def vite_asset(asset_path):
+def vite_all_js():
+    """Return all JS files including entry + imports like vendor chunks."""
     try:
-        with open(manifest_file) as f:
-            manifest = json.load(f)
-        file_path = manifest[asset_path]['file']
-        return static(f"{file_path}")
-    except Exception as e:
-        # Log the error or raise an exception as needed.
-        return f"<!-- Error loading asset: {e} -->"
+        manifest = load_manifest()
+        collected = set()
 
-@register.simple_tag
-def vite_css_vendors():
-    try:
-        with open(manifest_file) as f:
-            manifest = json.load(f)
-        return list(map(static, manifest['src/main.js']['css']))
+        def collect_js(key):
+            entry = manifest.get(key)
+            if not entry:
+                return
+            js_file = entry.get("file")
+            if js_file and js_file.endswith(".js"):
+                collected.add(static(js_file))
+            for imported in entry.get("imports", []):
+                collect_js(imported)
+
+        for k, v in manifest.items():
+            if v.get("isEntry"):
+                collect_js(k)
+
+        return sorted(collected)
     except Exception as e:
-        # Log the error or raise an exception as needed.
-        return f"<!-- Error loading asset: {e} -->"
+        return [f"<!-- Error loading JS assets: {e} -->"]
+    
+@register.simple_tag
+def vite_all_css():
+    """Returns a set of all CSS file URLs (even shared in vendor)."""
+    try:
+        manifest = load_manifest()
+        css_files = set()
+        for v in manifest.values():
+            for css in v.get("css", []):
+                css_files.add(static(css))
+        return sorted(css_files)
+    except Exception as e:
+        return [f"<!-- Error loading CSS assets: {e} -->"]
