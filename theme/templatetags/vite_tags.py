@@ -37,13 +37,24 @@ def vite_all_js():
     
 @register.simple_tag
 def vite_all_css():
-    """Returns a set of all CSS file URLs (even shared in vendor)."""
+    """
+    Returns all CSS files:
+    - CSS mentioned in 'css' keys (e.g. for vendor or main.js)
+    - Pure CSS entries (like 'src/style.css')
+    """
     try:
         manifest = load_manifest()
         css_files = set()
-        for v in manifest.values():
+
+        for k, v in manifest.items():
+            # 1. CSS explicitly listed in the 'css' field
             for css in v.get("css", []):
                 css_files.add(static(css))
+
+            # 2. Direct CSS entry (like 'src/style.css')
+            if k.endswith('.css') and v.get("file", "").endswith(".css"):
+                css_files.add(static(v["file"]))
+
         return sorted(css_files)
     except Exception as e:
         return [f"<!-- Error loading CSS assets: {e} -->"]
