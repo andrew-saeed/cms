@@ -8,15 +8,7 @@ import 'flatpickr/dist/themes/dark.css'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css'
 
-document.body.onload = () => {
-
-    flatpickr("#id_date_of_birth", {})
-}
-
 document.addEventListener('alpine:init', () => {
-
-    const navLinksList = document.querySelector('.links-list')
-    const csrftoken = Cookies.get('csrftoken')
 
     Alpine.data('removeEmptyHeader', () => ({
         init() {
@@ -45,6 +37,7 @@ document.addEventListener('alpine:init', () => {
         open: false,
 
         init() {
+            const navLinksList = document.querySelector('.links-list')
             navLinksList.style.maxHeight = '0px'
         },
         toggle() {
@@ -57,8 +50,10 @@ document.addEventListener('alpine:init', () => {
         }
     }))
 
-    Alpine.data('profileImage', () => ({
+    Alpine.data('profileForm', () => ({
         init() {
+
+            flatpickr("#id_date_of_birth", {})
 
             this.$refs.photoInput.addEventListener('change', (e) => {
                 const file = e.target.files[0]
@@ -79,8 +74,11 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('newPostForm', () => ({
 
         editor: null,
+        csrftoken: null,
 
         init() {
+            this.csrftoken = Cookies.get('csrftoken')
+
             this.editor = new Editor({
                 el: this.$el.querySelector('#markdown-editor'),
                 height: '31.25rem',
@@ -98,7 +96,7 @@ document.addEventListener('alpine:init', () => {
 
             const res = await fetch('/posts/new', {
                 method: 'POST',
-                headers: {'X-CSRFToken': csrftoken},
+                headers: {'X-CSRFToken': this.csrftoken},
                 mode:'same-origin',
                 body: formData
             })
@@ -111,8 +109,11 @@ document.addEventListener('alpine:init', () => {
 
         editor: null,
         id: null,
+        csrftoken: null,
 
         init() {
+            this.csrftoken = Cookies.get('csrftoken')
+
             this.id = this.$el.dataset.id
             const markdownEditor = this.$el.querySelector('#markdown-editor')
             this.editor = new Editor({
@@ -131,7 +132,7 @@ document.addEventListener('alpine:init', () => {
             formData.append('body', this.editor.getMarkdown())
             const res = await fetch(`/posts/${this.id}/edit/`, {
                 method: 'POST',
-                headers: {'X-CSRFToken': csrftoken},
+                headers: {'X-CSRFToken': this.csrftoken},
                 mode:'same-origin',
                 body: formData
             })
@@ -140,6 +141,31 @@ document.addEventListener('alpine:init', () => {
         },
         cancel() {
             history.back();
+        }
+    }))
+
+    Alpine.data('postsList', () => ({
+
+        page:1,
+        isFetching: false,
+        emptyPage: false,
+
+        init() {
+            window.addEventListener('scroll', () => {
+                const margin = document.body.clientHeight - window.innerHeight - 200
+                if(window.scrollY > margin && !this.emptyPage && !this.isFetching) {
+                    this.fetchPosts()
+                }
+            })
+        },
+        async fetchPosts() {
+            this.page++
+            this.isFetching = true
+            const res = await fetch(`?list_paginated=1&page=${this.page}`)
+            const html = await res.text()
+            if(html == '') this.emptyPage = true
+            this.$el.querySelector('ul.main-list').insertAdjacentHTML('beforeend', html)
+            this.isFetching = false
         }
     }))
 })

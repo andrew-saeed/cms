@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from django.conf import settings
 from django.urls import reverse
 
@@ -34,7 +33,7 @@ class Post(models.Model):
         return self.title
     
     def get_absolute_url(self):
-        return reverse('website:post_single', args=[
+        return reverse('website:posts_single', args=[
             self.publish.year,
             self.publish.month,
             self.publish.day,

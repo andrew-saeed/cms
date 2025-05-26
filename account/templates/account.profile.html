@@ -4,9 +4,15 @@
 
 {% block content %}
 
-    <form action="{% url 'profile' %}" method="POST" enctype="multipart/form-data" novalidate>
+    <form 
+        action="{% url 'profile' %}" 
+        method="POST" 
+        enctype="multipart/form-data" 
+        novalidate
+        x-data="profileForm"
+    >
 
-        <div class="form-group flex-row items-end gap-2 mt-0 mb-8" x-data="profileImage">
+        <div class="form-group flex-row items-end gap-2 mt-0 mb-8" x-data="profileForm">
             <div class="w-20 h-20 rounded-full overflow-hidden flex-none">
                 <img class="w-full" x-ref="photoImg" src="{{request.user.profile.get_photo_url}}" alt="{{request.user.username}}">
             </div>

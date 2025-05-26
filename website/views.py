@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Post
 
@@ -10,12 +11,29 @@ def home(request):
     return render(request, 'website.home.html')
 
 def posts(request):
-    posts = Post.published.all()
+    page_number = request.GET.get('page', 1)
+    list_paginated = request.GET.get('list_paginated', 0)
+    posts = Post.published.select_related('author', 'author__profile')
+    posts_paginator = Paginator(posts, 5)
+
+    try:
+        posts_list = posts_paginator.page(page_number)
+    except EmptyPage:
+        if list_paginated:
+            return HttpResponse('')
+    except PageNotAnInteger:
+        posts_list = posts_paginator.page(1)
+
+    if list_paginated:
+        return render(request, 'partials/posts_list.html', {
+            'posts': posts_list    
+        })
+
     return render(request, 'website.posts.html', {
-        'posts': posts
+        'posts': posts_list
     })
 
-def post_single(request, year, month, day, slug):
+def posts_single(request, year, month, day, slug):
     post = get_object_or_404(
         Post,
         status=Post.Status.PUBLISHED,
@@ -24,18 +42,18 @@ def post_single(request, year, month, day, slug):
         publish__month=month,
         publish__day=day,
     )
-    return render(request, 'website.post_single.html', {
+    return render(request, 'website.posts_single.html', {
         'post': post
     })
 
 @login_required
-def post_single_draft(request, slug):
+def posts_single_draft(request, slug):
     post = get_object_or_404(
         Post,
         author=request.user,
         slug=slug,
     )
-    return render(request, 'website.post_single.html', {
+    return render(request, 'website.posts_single.html', {
         'post': post
     })
 

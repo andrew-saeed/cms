@@ -1,5 +1,5 @@
 import path from 'path'
-import { defineConfig, splitVendorChunkPlugin } from 'vite'
+import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 
 const ROOT = path.resolve('')

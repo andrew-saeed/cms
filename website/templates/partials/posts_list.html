@@ -1,0 +1,25 @@
+{% load posts_filter %}
+
+<ul class="main-list space-y-4">
+
+    {% for post in posts %}
+        <li class="border border-primary-border px-4 py-6 rounded-md bg-primary-bg">
+            <div class="mb-6 flex items-center gap-2">
+                <img class="rounded-full w-10 h-10" src="{{ post.author.profile.get_photo_url }}" alt="photo of {{ post.author.username }}">
+                <div class="flex flex-col">
+                    <span class="text-sm font-bold">{{ post.author.username }}</span>
+                    <span class="capitalize text-xs">{{post.publish|date:"b"}} {{post.publish.day}} - ( {{post.publish|days_since}} )</span>
+                </div>
+            </div>
+            <h2 class="text-medium-2 font-bold hover:text-white">
+                <a href="{{post.get_absolute_url}}">{{ post.title }}</a>
+            </h2>
+            <ul class="flex mt-2">
+                <li><a class="btn btn--flat px-1 py-0 lowercase text-base font-normal" href="#">#tag1</a></li>
+                <li><a class="btn btn--flat px-1 py-0 lowercase text-base font-normal" href="#">#tag2</a></li>
+                <li><a class="btn btn--flat px-1 py-0 lowercase text-base font-normal" href="#">#tag3</a></li>
+                <li><a class="btn btn--flat px-1 py-0 lowercase text-base font-normal" href="#">#tag4</a></li>
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
