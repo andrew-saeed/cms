@@ -35,16 +35,17 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('nav', () => ({
 
         open: false,
+        navLinksList: null,
 
         init() {
-            const navLinksList = document.querySelector('.links-list')
-            navLinksList.style.maxHeight = '0px'
+            this.navLinksList = document.querySelector('.links-list')
+            this.navLinksList.style.maxHeight = '0px'
         },
         toggle() {
-            if(navLinksList.style.maxHeight === '0px') {
-                navLinksList.style.maxHeight = navLinksList.scrollHeight + 'px'
+            if(this.navLinksList.style.maxHeight === '0px') {
+                this.navLinksList.style.maxHeight = this.navLinksList.scrollHeight + 'px'
             } else {
-                navLinksList.style.maxHeight = '0px'
+                this.navLinksList.style.maxHeight = '0px'
             }
             this.open = !this.open
         }
@@ -149,8 +150,11 @@ document.addEventListener('alpine:init', () => {
         page:1,
         isFetching: false,
         emptyPage: false,
+        postsMainList: null,
 
         init() {
+            this.postsMainList = this.$el.querySelector('ul.main-list')
+
             window.addEventListener('scroll', () => {
                 const margin = document.body.clientHeight - window.innerHeight - 200
                 if(window.scrollY > margin && !this.emptyPage && !this.isFetching) {
@@ -164,7 +168,7 @@ document.addEventListener('alpine:init', () => {
             const res = await fetch(`?list_paginated=1&page=${this.page}`)
             const html = await res.text()
             if(html == '') this.emptyPage = true
-            this.$el.querySelector('ul.main-list').insertAdjacentHTML('beforeend', html)
+            else this.postsMainList.insertAdjacentHTML('beforeend', html)
             this.isFetching = false
         }
     }))

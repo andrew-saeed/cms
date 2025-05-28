@@ -5,10 +5,12 @@
 
 {% block content %}
     <section>
-        <div x-data="postsList">
-            {% include "partials/posts_list.html" %}
-            <div class="text-center py-4" x-show="!emptyPage">
-                <span class="loader"></span>
+        <div class="py-4" x-data="postsList">
+            <ul class="main-list space-y-4">
+                {% include "partials/posts_list.html" %}
+            </ul>
+            <div class="text-center py-4">
+                <span class="loader" x-show="!emptyPage && isFetching"></span>
             </div>
         </div>
     </section>
