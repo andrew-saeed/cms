@@ -6,6 +6,7 @@ app_name = 'website'
 urlpatterns = [
     path('', views.home, name='home'),
     path('posts/', views.posts, name='posts'),
+    path('posts/tag/<slug:tag_slug>', views.posts, name='posts_by_tag'),
     path('posts/<int:year>/<int:month>/<int:day>/<slug:slug>/', views.posts_single, name='posts_single'),
     path('posts/<slug:slug>/', views.posts_single_draft, name='posts_single_draft'),
     path('posts/<int:id>/publish/', views.post_publish, name='post_publish'),

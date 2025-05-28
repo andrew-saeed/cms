@@ -1,7 +1,7 @@
 {% extends "layout.base.html" %}
 
 {% block title %}posts{% endblock %}
-{% block page-header %}{% endblock %}
+{% block page-header %}{% if tag %}{{tag.name}}{% endif %}{% endblock %}
 
 {% block content %}
     <section>

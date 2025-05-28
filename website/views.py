@@ -6,14 +6,21 @@ from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Post
+from taggit.models import Tag
 
 def home(request):
     return render(request, 'website.home.html')
 
-def posts(request):
+def posts(request, tag_slug=None):
     page_number = request.GET.get('page', 1)
     list_paginated = request.GET.get('list_paginated', 0)
     posts = Post.published.select_related('author', 'author__profile')
+
+    currentTag = None
+    if tag_slug:
+        currentTag = get_object_or_404(Tag, slug=tag_slug)
+        posts = posts.filter(tags__in=[currentTag])
+
     posts_paginator = Paginator(posts, 5)
 
     try:
@@ -26,11 +33,13 @@ def posts(request):
 
     if list_paginated:
         return render(request, 'partials/posts_list.html', {
-            'posts': posts_list    
+            'posts': posts_list,
+            'tag': currentTag
         })
 
     return render(request, 'website.posts.html', {
-        'posts': posts_list
+        'posts': posts_list,
+        'tag': currentTag
     })
 
 def posts_single(request, year, month, day, slug):
