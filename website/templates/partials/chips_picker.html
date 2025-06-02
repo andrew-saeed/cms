@@ -1,0 +1,62 @@
+<div class="chips-picker relative" x-data="chipsPicker">
+
+    <ul x-ref="tagsList" class="mb-12 flex gap-4">
+        
+        <template x-for="tag in tags" :key="tag.id">
+
+            <li class="flex items-center gap-2 grow" :class="{'grow-0': tag.mode == 'view'}">
+
+                <div 
+                    class="chip rounded-2xl px-3 py-1 
+                    bg-tertiary-bg 
+                    flex items-center gap-2"
+                    x-show="tag.mode == 'view'"
+                >
+                    <span class="rounded-md capitalize" x-text="tag.value"></span>
+                    <svg 
+                        class="w-4 h-4 cursor-pointer" @click="removeTag(tag.id)"
+                        viewBox="-0.5 0 25 25" 
+                        fill="none" 
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier"> 
+                            <path d="M3 21.32L21 3.32001" class="stroke-primary-bg" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path> 
+                            <path d="M3 3.32001L21 21.32" class="stroke-primary-bg" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path> 
+                        </g>
+                    </svg>
+                </div>
+
+                <input
+                    class="p-2 w-full min-w-[200px] text-base-1"
+                    :data-tag-id="tag.id"
+                    :value="tag.value"
+                    @keyup.space="addNewTag"
+                    @keyup.enter="addNewTag"
+                    @input="typing"
+                    type="text"
+                    placeholder="Enter Tags.." 
+                    x-show="tag.mode == 'edit'" />
+            </li>
+        </template>
+    </ul>
+
+    <div x-cloak class="auto-complete-list absolute top-full left-0 z-10 w-full bg-primary-bg">
+        
+        <ul class="max-h-64 overflow-y-scroll space-y-3 cursor-pointer">
+
+            {% for tag in tags %}
+                <li class="px-2 py-1 hover:bg-hover-bg" @click="pickTag">{{tag.name}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% if post.tags %}
+        <ul class="current-post-tags hidden">
+            {% for tag in post.tags.all %}
+                <li>{{tag}}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>

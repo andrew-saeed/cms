@@ -4,13 +4,15 @@
 {% block page-header %}{% endblock %}
 
 {% block content %}
-    <section class="relative">
+    <section class="relative mt-12">
 
         <div x-data="newPostForm">
 
             <div>
-                <input type="text" x-ref="title" class="mb-12 p-2 border-b border-primary-border w-full text-large" placeholder="Title">
+                <input type="text" x-ref="title" class="mb-12 p-2 border-b border-primary-border w-full text-large" placeholder="Post Title...">
             </div>
+
+            {% include 'partials/chips_picker.html' %}
 
             <div id="markdown-editor"></div>
 

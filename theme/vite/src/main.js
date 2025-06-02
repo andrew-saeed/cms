@@ -10,6 +10,8 @@ import '@toast-ui/editor/dist/theme/toastui-editor-dark.css'
 
 document.addEventListener('alpine:init', () => {
 
+    Alpine.store('context', {})
+
     Alpine.data('removeEmptyHeader', () => ({
         init() {
             if(this.$el.innerText.length == 0) this.$el.remove()
@@ -51,6 +53,103 @@ document.addEventListener('alpine:init', () => {
         }
     }))
 
+    Alpine.data('chipsPicker', () => ({
+
+        tags: [],
+        tagsFull: false,
+        tagsList: null,
+        autoCompleteList: null,
+        autoCompleteListItems: null,
+        currentInput: null,
+
+        init() {
+            this.tagsList = this.$refs.tagsList
+            this.autoCompleteList = this.$el.querySelector('.auto-complete-list')
+            this.autoCompleteList.style.display = 'none'
+            this.autoCompleteListItems = this.autoCompleteList.querySelectorAll('li')
+            this.$store.context.chipsPicker = {
+                id: this.$id('chipsPicker'),
+                getAllTagsStr: () => this.getAllTagsStr(),
+                loadPostTags: () => this.loadPostTags(),
+                loadPostTag: () => this.loadPostTag()
+            }
+        },
+        switchChipMode(chip) {
+
+            chip.classList.remove('.current-input')
+
+            this.tags.map(tag => {
+                if(tag.id == chip.dataset.tagId) {
+                    tag.value = chip.value
+                    tag.mode = 'view'
+                    this.currentInput = null
+                }
+                return tag
+            })
+            if(this.tags.length < 4) {
+                this.tags.push({id: crypto.randomUUID(), value: '', mode: 'edit'})
+                this.$nextTick(() => this.tagsList.querySelector('li:last-of-type input').focus())
+            } else if(this.tags.length === 4) {
+                this.tagsFull = true
+            }
+        },
+        addNewTag() {
+            if(this.$el.value.trim().length > 0) {
+
+                this.switchChipMode(this.$el)
+            }
+        },
+        removeTag(tagId) {
+            this.tags = [...this.tags.filter(tag => tag.id !== tagId)]
+            if(this.tagsFull) {
+                this.tagsFull = false
+                this.$nextTick(() => this.tags.push({id: crypto.randomUUID(), value: '', mode: 'edit'}))
+            }
+        },
+        pickTag() {
+            this.currentInput.value = this.$el.innerText
+            this.switchChipMode(this.currentInput)
+            this.autoCompleteList.style.display = 'none'
+        },
+        typing() {
+            if(this.currentInput == null) this.currentInput = this.$el
+
+            if(this.$el.value.length > 0) {
+
+                this.autoCompleteList.style.display = 'block'
+
+                for(let i = 0; i < this.autoCompleteListItems.length; i++) {
+
+                    const txt = this.autoCompleteListItems[i].textContent.toLowerCase()
+                    
+                    if(txt.includes(this.$el.value)) {
+                        this.autoCompleteListItems[i].style.display = ''
+                    } else {
+                        this.autoCompleteListItems[i].style.display = 'none'
+                    }
+                }
+            }
+        },
+        getAllTagsStr() {
+            const inputs = this.$refs.tagsList.querySelectorAll('li input')
+            const allTagsStr = Array.from(inputs).map(input => input.value.trim()).filter(Boolean).join()
+            return allTagsStr
+        },
+        loadPostTags() {
+            const postTagsItem = this.$el.querySelectorAll('.current-post-tags li')
+            for(let item of postTagsItem) {
+                this.tags.push({id: crypto.randomUUID(), 
+                    value: item.innerHTML, 
+                    mode: 'view'})
+            }
+            if(postTagsItem.length < 4) this.tags.push({id: crypto.randomUUID(), value: '', mode: 'edit'})
+            else if(postTagsItem.length == 4) this.tagsFull = true
+        },
+        loadPostTag() {
+            this.tags.push({id: crypto.randomUUID(), value: '', mode: 'edit'})
+        }
+    }))
+
     Alpine.data('profileForm', () => ({
         init() {
 
@@ -79,7 +178,6 @@ document.addEventListener('alpine:init', () => {
 
         init() {
             this.csrftoken = Cookies.get('csrftoken')
-
             this.editor = new Editor({
                 el: this.$el.querySelector('#markdown-editor'),
                 height: '31.25rem',
@@ -88,12 +186,15 @@ document.addEventListener('alpine:init', () => {
                 theme: 'dark',
                 hideModeSwitch: true
             })
+            this.$nextTick(() => this.$store.context.chipsPicker.loadPostTag())
         },
         async post(action) {
+            const allTagsStr = this.$store.context.chipsPicker.getAllTagsStr()
             const formData = new FormData()
             formData.append('action', action)
             formData.append('title', this.$refs.title.value)
             formData.append('body', this.editor.getMarkdown())
+            formData.append('tags', allTagsStr)
 
             const res = await fetch('/posts/new', {
                 method: 'POST',
@@ -113,6 +214,8 @@ document.addEventListener('alpine:init', () => {
         csrftoken: null,
 
         init() {
+            this.$nextTick(() => this.$store.context.chipsPicker.loadPostTags())
+
             this.csrftoken = Cookies.get('csrftoken')
 
             this.id = this.$el.dataset.id
@@ -128,9 +231,12 @@ document.addEventListener('alpine:init', () => {
             })
         },
         async update() {
+            const allTagsStr = this.$store.context.chipsPicker.getAllTagsStr()
             const formData = new FormData()
             formData.append('title', this.$refs.title.value)
             formData.append('body', this.editor.getMarkdown())
+            formData.append('tags', allTagsStr)
+            
             const res = await fetch(`/posts/${this.id}/edit/`, {
                 method: 'POST',
                 headers: {'X-CSRFToken': this.csrftoken},

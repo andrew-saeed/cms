@@ -72,6 +72,8 @@ def posts_new(request):
         title = request.POST.get('title')
         body = request.POST.get('body')
         status = request.POST.get('action')
+        tags = request.POST.get('tags')
+
         if status == Post.Status.PUBLISHED:
             post = Post(
                 title=title,
@@ -82,6 +84,10 @@ def posts_new(request):
                 publish=timezone.now()
             )
             post.save()
+
+            if len(tags) > 0:
+                post.tags.set([tag.strip() for tag in tags.split(',')])
+
             return JsonResponse({'url': post.get_absolute_url()})
         elif status == Post.Status.DRAFT:
             post = Post(
@@ -92,22 +98,42 @@ def posts_new(request):
                 author=request.user,
             )
             post.save()
+
+            if len(tags) > 0:
+                post.tags.set([tag.strip() for tag in tags.split(',')])
+
             return JsonResponse({'url': f'/posts/{post.slug}'})
-    return render(request, 'website.posts_new.html')
+    else:
+        tags = Tag.objects.all()
+        return render(request, 'website.posts_new.html', {
+            'tags': tags
+        })
 
 @login_required
 def posts_edit(request, id):
     post = get_object_or_404(Post, id=id, author=request.user)
     if request.method == 'POST':
+
         post.title = request.POST.get('title')
         post.body = request.POST.get('body')
+        tags = request.POST.get('tags')
+
         post.save()
+
+        if len(tags) == 0:
+            post.tags.clear()
+        else:            
+            post.tags.set([tag.strip() for tag in tags.split(',')])
+        
         if  post.status == post.Status.PUBLISHED:
             return JsonResponse({'url': post.get_absolute_url()})
         elif post.status == post.Status.DRAFT:
             return JsonResponse({'url': f'/posts/{post.slug}'})
+    
+    tags = Tag.objects.all()
     return render(request, 'website.posts_edit.html', {
-        'post': post
+        'post': post,
+        'tags': tags
     })
 
 @login_required
