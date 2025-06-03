@@ -25,6 +25,18 @@ def dashboard(request):
     return render(request, 'account.dashboard.html')
 
 @login_required
+def published(request):
+    return render(request, 'account.published.html')
+
+@login_required
+def drafts(request):
+    return render(request, 'account.drafts.html')
+
+@login_required
+def gallery(request):
+    return render(request, 'account.gallery.html')
+
+@login_required
 def profile(request):
     if request.method == 'POST':
         user_form = UserEditForm(

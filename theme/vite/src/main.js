@@ -76,8 +76,6 @@ document.addEventListener('alpine:init', () => {
         },
         switchChipMode(chip) {
 
-            chip.classList.remove('.current-input')
-
             this.tags.map(tag => {
                 if(tag.id == chip.dataset.tagId) {
                     tag.value = chip.value

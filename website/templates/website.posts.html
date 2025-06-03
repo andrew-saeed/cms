@@ -4,11 +4,14 @@
 {% block page-header %}{% if tag %}{{tag.name}}{% endif %}{% endblock %}
 
 {% block content %}
-    <section>
-        <div class="py-4" x-data="postsList">
+    <section class="mt-12">
+
+        <div class="posts" x-data="postsList">
+
             <ul class="main-list space-y-4">
                 {% include "partials/posts_list.html" %}
             </ul>
+
             <div class="text-center py-4">
                 <span class="loader" x-show="!emptyPage && isFetching"></span>
             </div>

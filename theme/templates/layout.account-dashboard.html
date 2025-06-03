@@ -12,13 +12,147 @@
                 
                 {% include 'partials/nav.html' %}
             
-                <div class="layout-box">
-                    <h1 class="mt-12 text-large font-bold capitalize">{% block page-header %}{% endblock %}</h1>
-                </div>
             </header>
             
             <main class="mt-12">
-                {% block content %}{% endblock %}
+
+                <div class="layout-box grid grid-cols-1
+                    md:grid-cols-[max-content_1fr] md:gap-8"
+                >
+
+                    <div class="ctrls">
+
+                        <div class="links-droplist-menu mb-8 mx-auto max-w-[270px] cursor-pointer md:hidden" x-data="showToggler">
+
+                            <div class="current-link mb-4 rounded-md px-4 py-1.5 flex justify-between items-center bg-primary-bg" @click="toggle()">
+
+                                <p class="text-base-1 font-bold capitalize">
+                                    {% if request.path == "/account/dashboard/" %}
+                                        {{"dashboard"}}
+                                    {% elif request.path == "/account/published/" %}
+                                        {{"published posts"}}
+                                    {% elif request.path == "/account/drafts/" %}
+                                        {{"draft posts"}}
+                                    {% elif request.path == "/account/gallery/" %}
+                                        {{"gallery"}}
+                                    {% endif %}
+                                </p>
+
+                                <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                </svg>
+                            </div>
+
+                            <ul class="links-list p-2 rounded-md bg-primary-bg space-y-4" x-ref="linksList" x-show="open">
+                                {% if request.path != '/account/dashboard/' %}
+                                    <li>
+                                        <a class="btn btn--flat w-full flex items-center gap-4 text-start font-normal" href="{% url 'dashboard' %}">
+                                            <svg fill="#ffcc4d" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                                <g stroke-width="0"/>
+                                                <g stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M3 29h26M3 3v26M16 7v18m6-14v14m-12-9v9" style="fill:none;stroke:#ffcc4d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px"/>
+                                            </svg>
+                                            dashboard
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if request.path != '/account/published/' %}
+                                    <li>
+                                        <a class="btn btn--flat w-full flex items-center gap-4 text-start font-normal" href="{% url 'published' %}">
+                                            <svg fill="#ffcc4d" width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 124 124" xml:space="preserve">
+                                                <g stroke-width="0"/>
+                                                <g stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M75 0H21.5c-3.4 0-7 2.3-7 5.7v111.9c0 3.4 3.5 6.4 7 6.4h81.8c3.4 0 6.2-3 6.2-6.4V34c0-5.5-2.2-10.7-6.1-14.6L89.8 5.9C85.8 1.9 80.5 0 75 0m16.2 67.6c-.101 2-1 3.9-2.601 5.301C88.4 73 69.4 92.1 69.4 92.1c-1.5 1.5-3.5 2.3-5.6 2.3s-4.1-.801-5.6-2.301-2.3-3.5-2.3-5.6.8-4.1 2.3-5.6L64.1 75H38.8c-4.4 0-8-3.6-8-8s3.6-8 8-8H64l-5.9-5.9c-1.5-1.5-2.3-3.5-2.3-5.6s.8-4.1 2.3-5.6 3.5-2.3 5.6-2.3 4.1.8 5.6 2.3L89 61.6c1.5 1.6 2.3 3.8 2.2 6"/>
+                                            </svg>
+                                            published
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if request.path != '/account/drafts/' %}
+                                    <li>
+                                        <a class="btn btn--flat w-full flex items-center gap-4 text-start font-normal" href="{% url 'drafts' %}">
+                                            <svg fill="#ffcc4d" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <g stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M20 2a1 1 0 0 1 1 1v3.757l-2 2V4H5v16h14v-2.758l2-2V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1.778 6.808 1.414 1.414L15.414 18l-1.416-.002.002-1.412zM13 12v2H8v-2zm3-4v2H8V8z"/>
+                                                </g>
+                                            </svg>
+                                            drafts
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if request.path != '/account/gallery/' %}
+                                    <li>
+                                        <a class="btn btn--flat w-full flex items-center gap-4 text-start font-normal" href="{% url 'gallery' %}">
+                                            <svg fill="none" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g stroke-width="0"/>
+                                                <g stroke-linecap="round" stroke-linejoin="round"/>
+                                                <g stroke="#ffcc4d" stroke-width="1.5">
+                                                    <circle cx="16" cy="8" r="2"/>
+                                                    <path d="m2 12.5 1.752-1.533a2.3 2.3 0 0 1 3.14.105l4.29 4.29a2 2 0 0 0 2.564.222l.299-.21a3 3 0 0 1 3.731.225L21 18.5" stroke-linecap="round"/>
+                                                    <path d="M22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12s0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464c.974.974 1.3 2.343 1.41 4.536" stroke-linecap="round"/>
+                                                </g>
+                                            </svg>
+                                            gallery
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <ul class="side-menu rounded-md hidden space-y-4 md:block">
+                            <li>
+                                <a class="btn btn--flat w-full flex items-center gap-4 text-start font-normal {% if request.path == '/account/dashboard/' %} bg-primary-bg !font-bold hover:bg-primary-bg{% endif %}" href="{% url 'dashboard' %}">
+                                    <svg fill="#ffcc4d" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                        <g stroke-width="0"/>
+                                        <g stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 29h26M3 3v26M16 7v18m6-14v14m-12-9v9" style="fill:none;stroke:#ffcc4d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px"/>
+                                    </svg>
+                                    dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn--flat w-full flex items-center gap-4 text-start font-normal {% if request.path == '/account/published/' %} bg-primary-bg !font-bold hover:bg-primary-bg{% endif %}" href="{% url 'published' %}">
+                                    <svg fill="#ffcc4d" width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 124 124" xml:space="preserve">
+                                        <g stroke-width="0"/>
+                                        <g stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M75 0H21.5c-3.4 0-7 2.3-7 5.7v111.9c0 3.4 3.5 6.4 7 6.4h81.8c3.4 0 6.2-3 6.2-6.4V34c0-5.5-2.2-10.7-6.1-14.6L89.8 5.9C85.8 1.9 80.5 0 75 0m16.2 67.6c-.101 2-1 3.9-2.601 5.301C88.4 73 69.4 92.1 69.4 92.1c-1.5 1.5-3.5 2.3-5.6 2.3s-4.1-.801-5.6-2.301-2.3-3.5-2.3-5.6.8-4.1 2.3-5.6L64.1 75H38.8c-4.4 0-8-3.6-8-8s3.6-8 8-8H64l-5.9-5.9c-1.5-1.5-2.3-3.5-2.3-5.6s.8-4.1 2.3-5.6 3.5-2.3 5.6-2.3 4.1.8 5.6 2.3L89 61.6c1.5 1.6 2.3 3.8 2.2 6"/>
+                                    </svg>
+                                    published
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn--flat w-full flex items-center gap-4 text-start font-normal {% if request.path == '/account/drafts/' %} bg-primary-bg !font-bold hover:bg-primary-bg{% endif %}" href="{% url 'drafts' %}">
+                                    <svg fill="#ffcc4d" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <g stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path fill="none" d="M0 0h24v24H0z"/>
+                                            <path d="M20 2a1 1 0 0 1 1 1v3.757l-2 2V4H5v16h14v-2.758l2-2V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1.778 6.808 1.414 1.414L15.414 18l-1.416-.002.002-1.412zM13 12v2H8v-2zm3-4v2H8V8z"/>
+                                        </g>
+                                    </svg>
+                                    drafts
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn--flat w-full flex items-center gap-4 text-start font-normal {% if request.path == '/account/gallery/' %} bg-primary-bg !font-bold hover:bg-primary-bg{% endif %}" href="{% url 'gallery' %}">
+                                    <svg fill="none" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g stroke-width="0"/>
+                                        <g stroke-linecap="round" stroke-linejoin="round"/>
+                                        <g stroke="#ffcc4d" stroke-width="1.5">
+                                            <circle cx="16" cy="8" r="2"/>
+                                            <path d="m2 12.5 1.752-1.533a2.3 2.3 0 0 1 3.14.105l4.29 4.29a2 2 0 0 0 2.564.222l.299-.21a3 3 0 0 1 3.731.225L21 18.5" stroke-linecap="round"/>
+                                            <path d="M22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12s0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464c.974.974 1.3 2.343 1.41 4.536" stroke-linecap="round"/>
+                                        </g>
+                                    </svg>
+                                    gallery
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="current-content rounded-md px-4 py-6 bg-primary-bg">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
             </main>
         </div>
     </body>
