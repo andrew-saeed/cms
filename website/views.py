@@ -14,7 +14,7 @@ def home(request):
 def posts(request, tag_slug=None):
     page_number = request.GET.get('page', 1)
     list_paginated = request.GET.get('list_paginated', 0)
-    posts = Post.published.select_related('author', 'author__profile')
+    posts = Post.published.select_related('author', 'author__profile').prefetch_related('tags')
 
     currentTag = None
     if tag_slug:
