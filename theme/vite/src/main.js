@@ -92,6 +92,8 @@ document.addEventListener('alpine:init', () => {
             }
         },
         addNewTag() {
+            this.autoCompleteList.style.display = 'none'
+            
             if(this.$el.value.trim().length > 0) {
 
                 this.switchChipMode(this.$el)
