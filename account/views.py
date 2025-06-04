@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile
+from website.models import Post
 from django.contrib.auth.decorators import login_required
 
 def register(request):
@@ -26,7 +27,10 @@ def dashboard(request):
 
 @login_required
 def published(request):
-    return render(request, 'account.published.html')
+    posts = Post.objects.filter(author=request.user, status=Post.Status.PUBLISHED)
+    return render(request, 'account.published.html', {
+        'posts': posts
+    })
 
 @login_required
 def drafts(request):
