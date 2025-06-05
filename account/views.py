@@ -34,7 +34,10 @@ def published(request):
 
 @login_required
 def drafts(request):
-    return render(request, 'account.drafts.html')
+    posts = Post.objects.filter(author=request.user, status=Post.Status.DRAFT)
+    return render(request, 'account.drafts.html', {
+        'posts': posts
+    })
 
 @login_required
 def gallery(request):
