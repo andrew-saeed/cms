@@ -2,11 +2,12 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 
-from taggit.managers import TaggableManager
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
-class PublishedManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(status=Post.Status.PUBLISHED)
+from taggit.managers import TaggableManager
+from .managers import PublishedManager
 
 class Post(models.Model):
     class Status(models.TextChoices):
@@ -42,3 +43,9 @@ class Post(models.Model):
             self.publish.day,
             self.slug
         ])
+
+class LikedItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_obj = GenericForeignKey()
