@@ -64,8 +64,27 @@ def posts_single(request, year, month, day, slug):
         publish__month=month,
         publish__day=day,
     )
+
+    # Check if user liked this post
+    is_liked = False
+    if request.user.is_authenticated:
+        content_type = ContentType.objects.get_for_model(Post)
+        is_liked = LikedItem.objects.filter(
+            user=request.user,
+            content_type=content_type,
+            object_id=post.id
+        ).exists()
+
+    # Calculate total likes for this post
+    total_likes = LikedItem.objects.filter(
+        content_type=content_type,
+        object_id=post.id
+    ).count()
+
     return render(request, 'website.posts_single.html', {
-        'post': post
+        'post': post,
+        'is_liked': is_liked,
+        'total_likes': total_likes
     })
 
 @login_required

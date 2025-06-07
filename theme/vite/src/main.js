@@ -285,11 +285,13 @@ document.addEventListener('alpine:init', () => {
         csrftoken: null,
         likeStatus: null,
         pending: null,
+        totalLikes: 0,
 
         init(){
             this.postId = this.$el.dataset.postId
             this.csrftoken = Cookies.get('csrftoken')
             this.likeStatus = this.$el.dataset.isLiked === 'True' ? 'fill' : 'empty'
+            this.totalLikes = parseInt(this.$el.dataset.totalLikes)
         },
         async toggle(action='') {
 
@@ -309,7 +311,13 @@ document.addEventListener('alpine:init', () => {
             })
 
             const res = await result.json()
-            this.likeStatus = res.action == 'like' ? 'fill' : 'empty'
+            if(res.action == 'like') {
+                this.likeStatus = 'fill'
+                this.totalLikes += 1
+            } else {
+                this.likeStatus = 'empty'
+                this.totalLikes -= 1
+            }
             this.pending = false
         }
     }))
