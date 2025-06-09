@@ -7,7 +7,7 @@
 {% block content %}
     <section>
 
-        <ul class="flex mt-6">
+        <ul class="tags flex mt-6">
             {% for tag in post.tags.all %}
                 <li><a class="btn btn--flat px-1 py-0 lowercase text-base-1 font-normal" href="{% url 'website:posts_by_tag' tag.slug %}">#{{tag.name}}</a></li>
             {% endfor %}
@@ -43,7 +43,7 @@
                             class="ctrls-list 
                             absolute -top-[69px] lg:top-[120px] lg:-left-[68px] max-lg:w-full
                             lg:rounded-md lg:border lg:border-primary-border p-2 
-                            flex lg:flex-col justify-center 
+                            flex lg:flex-col justify-center gap-4 
                             bg-primary-bg max-lg:bg-black/80"
                         >
 
@@ -73,10 +73,64 @@
 
                                 <p class="text-sm text-center" x-text="totalLikes"></p>
                             </div>
+
+                            <div>
+
+                                <a href="#comments">
+                                    <svg width="28" height="28" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                        <g id="SVGRepo_iconCarrier"> 
+                                            <title>comment-1</title> 
+                                            <desc>Created with Sketch Beta.</desc>
+                                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"> 
+                                                <g id="Icon-Set" sketch:type="MSLayerGroup" transform="translate(-100.000000, -255.000000)"> 
+                                                    <path class="fill-primary-text" d="M116,281 C114.832,281 113.704,280.864 112.62,280.633 L107.912,283.463 L107.975,278.824 C104.366,276.654 102,273.066 102,269 C102,262.373 108.268,257 116,257 C123.732,257 130,262.373 130,269 C130,275.628 123.732,281 116,281 L116,281 Z M116,255 C107.164,255 100,261.269 100,269 C100,273.419 102.345,277.354 106,279.919 L106,287 L113.009,282.747 C113.979,282.907 114.977,283 116,283 C124.836,283 132,276.732 132,269 C132,261.269 124.836,255 116,255 L116,255 Z" id="comment-1" sketch:type="MSShapeGroup"></path> 
+                                                </g> 
+                                            </g> 
+                                        </g>
+                                    </svg>
+
+                                    <p class="text-sm text-center">{{comments|length}}</p>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </template>
+        </div>
+
+        <div id="comments" class="mt-8 rounded-md border border-primary-border px-4 py-6 bg-primary-bg">
+            
+            <h2 class="text-medium-2 font-bold capitalize">comments</h2>
+
+            <form action="{% url 'website:comment_on_post' id=post.id %}" method="POST">
+
+                <textarea name="body" id="body" rows="4" cols="8"  class="mt-4 border border-primary-border p-2 w-full bg-black text-base-1"></textarea>
+
+                {% csrf_token %}
+
+                <div class="mt-2">
+                    <button class="btn btn--blue">submit</button>
+                </div>
+            </form>
+
+            <ul class="mt-12 space-y-4">
+                {% for comment in comments %}
+                    <li>
+                        <div class="flex items-start gap-4">
+                            <img class="rounded-full w-10 h-10" src="{{ comment.author.profile.get_photo_url }}" alt="photo of {{ comment.author.username }}">
+                            <div class="border border-primary-border rounded-md py-2 px-4 w-full flex flex-col bg-black">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold">{{ comment.author.username }}</span>
+                                    <span class="capitalize text-xs">{{comment.created|date:"b"}} {{comment.created.day}}</span>
+                                </div>
+                                <p class="mt-4 text-base-1">{{comment.body}}</p>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
     </section>
 {% endblock %}

@@ -6,9 +6,10 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import OuterRef, Exists, Count
+from django.db.models import OuterRef, Exists, Count, Q
 
 from .models import Post, LikedItem
+from .forms import CommentForm
 from taggit.models import Tag
 
 def home(request):
@@ -44,7 +45,9 @@ def posts(request, tag_slug=None):
         # is_liked: True/False if user liked post
         is_liked=Exists(liked_subquery),
         # likes_count: total number of likes for post
-        likes_count=Count('likes')
+        likes_count=Count('likes', distinct=True),
+        # comments_count: total number of comments for post
+        comments_count=Count('comments', filter=Q(comments__active=True), distinct=True)
     ).order_by('-publish')
 
     # Filter by tag if tag_slug is provided
@@ -106,10 +109,14 @@ def posts_single(request, year, month, day, slug):
         object_id=post.id
     ).count()
 
+    # Load active comments related to this post
+    comments = post.comments.filter(active=True).select_related('author', 'author__profile')
+
     return render(request, 'website.posts_single.html', {
         'post': post,
         'is_liked': is_liked,
-        'total_likes': total_likes
+        'total_likes': total_likes,
+        'comments': comments
     })
 
 @login_required
@@ -223,6 +230,23 @@ def like_post(request):
         ).delete()
 
     return JsonResponse({'action':action})
+
+@login_required
+@require_POST
+def comment_on_post(request, id):
+    post = get_object_or_404(
+        Post,
+        id=id,
+        status=Post.Status.PUBLISHED
+    )
+    form = CommentForm(data=request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.author = request.user
+        print('comment.body')
+        comment.save()
+    return redirect(post.get_absolute_url())
 
 def about(request):
     return render(request, 'website.about.html')
