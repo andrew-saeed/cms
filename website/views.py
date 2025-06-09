@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import OuterRef, Exists
+from django.db.models import OuterRef, Exists, Count
 
 from .models import Post, LikedItem
 from taggit.models import Tag
@@ -14,45 +14,70 @@ from taggit.models import Tag
 def home(request):
     return render(request, 'website.home.html')
 
-def posts(request, tag_slug=None):    
+def posts(request, tag_slug=None):
+    """
+    Posts list view:
+    - Supports filtering by tag
+    - Annotates whether current user liked each post
+    - Annotates total likes count per post
+    - Paginates results
+    - Supports partial load (AJAX infinite scroll)
+    """
+
+    # ContentType for Post model
     content_type = ContentType.objects.get_for_model(Post)
+
+    # Subquery: whether current user liked each post
     liked_subquery = LikedItem.objects.filter(
         user=request.user,
         content_type=content_type,
         object_id=OuterRef('pk')
     )
-    
+
+    # Base queryset: published posts + annotations
+    posts_queryset = Post.published.select_related(
+        'author',
+        'author__profile'
+    ).prefetch_related(
+        'tags'
+    ).annotate(
+        # is_liked: True/False if user liked post
+        is_liked=Exists(liked_subquery),
+        # likes_count: total number of likes for post
+        likes_count=Count('likes')
+    ).order_by('-publish')
+
+    # Filter by tag if tag_slug is provided
+    current_tag = None
+    if tag_slug:
+        current_tag = get_object_or_404(Tag, slug=tag_slug)
+        posts_queryset = posts_queryset.filter(tags__in=[current_tag])
+
+    # Pagination settings
     page_number = request.GET.get('page', 1)
     list_paginated = request.GET.get('list_paginated', 0)
-    posts = Post.published.select_related(
-        'author', 
-        'author__profile').prefetch_related(
-        'tags').annotate(is_liked=Exists(liked_subquery))
 
-    currentTag = None
-    if tag_slug:
-        currentTag = get_object_or_404(Tag, slug=tag_slug)
-        posts = posts.filter(tags__in=[currentTag])
-
-    posts_paginator = Paginator(posts, 5)
+    posts_paginator = Paginator(posts_queryset, 5)
 
     try:
-        posts_list = posts_paginator.page(page_number)
+        posts_page = posts_paginator.page(page_number)
     except EmptyPage:
+        # If infinite scroll: return empty response on overflow
         if list_paginated:
             return HttpResponse('')
     except PageNotAnInteger:
-        posts_list = posts_paginator.page(1)
+        # Fallback to first page
+        posts_page = posts_paginator.page(1)
 
+    # Decide which template to render
     if list_paginated:
-        return render(request, 'partials/posts_list.html', {
-            'posts': posts_list,
-            'tag': currentTag
-        })
+        template = 'partials/posts_list.html'
+    else:
+        template = 'website.posts.html'
 
-    return render(request, 'website.posts.html', {
-        'posts': posts_list,
-        'tag': currentTag
+    return render(request, template, {
+        'posts': posts_page,
+        'tag': current_tag
     })
 
 def posts_single(request, year, month, day, slug):

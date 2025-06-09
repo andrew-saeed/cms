@@ -4,10 +4,15 @@ from django.urls import reverse
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
-
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from taggit.managers import TaggableManager
 from .managers import PublishedManager
+
+class LikedItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_obj = GenericForeignKey()
 
 class Post(models.Model):
     class Status(models.TextChoices):
@@ -27,6 +32,8 @@ class Post(models.Model):
     published = PublishedManager()
     tags = TaggableManager()
 
+    likes = GenericRelation(LikedItem, related_query_name='likeditem')
+
     class Meta:
         ordering = ['-publish']
         indexes = [
@@ -43,9 +50,3 @@ class Post(models.Model):
             self.publish.day,
             self.slug
         ])
-
-class LikedItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_obj = GenericForeignKey()
