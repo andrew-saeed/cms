@@ -334,6 +334,15 @@ document.addEventListener('alpine:init', () => {
             this.open = !this.open
         }
     }))
+
+    Alpine.data('commentBox', () => ({
+
+        open: false,
+
+        toggle() {
+            this.open = !this.open
+        }
+    }))
 })
 
 Alpine.start()

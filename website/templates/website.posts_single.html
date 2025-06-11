@@ -111,7 +111,7 @@
                 {% csrf_token %}
 
                 <div class="mt-2">
-                    <button class="btn btn--blue">submit</button>
+                    <button class="btn btn--blue btn--small">submit</button>
                 </div>
             </form>
 
@@ -119,20 +119,51 @@
 
                 {% for comment in comments %}
 
-                    <li class="comment flex items-start gap-4">
+                    <li id="comment-{{comment.id}}" class="comment flex items-start gap-4">
 
-                        <img class="comment__user rounded-full w-10 h-10" src="{{ comment.author.profile.get_photo_url }}" alt="photo of {{ comment.author.username }}">
+                        <img class="comment__user-img rounded-full w-10 h-10" src="{{ comment.author.profile.get_photo_url }}" alt="photo of {{ comment.author.username }}">
 
-                        <div class="comment__box w-full">
+                        <div class="comment__section w-full">
 
-                            <div class="comment__box__text border border-primary-border rounded-md py-2 px-4 w-full flex flex-col bg-black">
+                            <div class="comment__box border border-primary-border rounded-md py-2 px-4 w-full flex flex-col" x-data="commentBox">
                                 
-                                <div class="flex flex-col">
-                                    <span class="text-sm font-bold">{{ comment.author.username }}</span>
-                                    <span class="capitalize text-xs">{{comment.created|date:"b"}} {{comment.created.day}}</span>
+                                <div class="box__read-block" x-show="!open">
+
+                                    <div class="comment__box__header flex justify-between">
+                                        
+                                        <div class="box__user-meta flex flex-col">
+                                            <span class="text-sm font-bold">{{comment.author.username}}</span>
+                                            <span class="capitalize text-xs">{{comment.created|date:"b"}} {{comment.created.day}}</span>
+                                        </div>
+    
+                                        {% if request.user.id == comment.author.id %}
+                                            <div class="box__ctrls">
+    
+                                                <svg class="rounded-full p-2 bg-tertiary-bg fill-primary-text cursor-pointer" height="35" width="35" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" @click="toggle">
+                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                                    <g id="SVGRepo_iconCarrier"> 
+                                                        <path class="cls-1" d="M8,6.5A1.5,1.5,0,1,1,6.5,8,1.5,1.5,0,0,1,8,6.5ZM.5,8A1.5,1.5,0,1,0,2,6.5,1.5,1.5,0,0,0,.5,8Zm12,0A1.5,1.5,0,1,0,14,6.5,1.5,1.5,0,0,0,12.5,8Z"></path> 
+                                                    </g>
+                                                </svg>
+    
+                                            </div>
+                                        {% endif %}
+                                    </div>
+    
+                                    <p class="comment__box__body mt-4 text-base-1">{{comment.body}}</p>
                                 </div>
 
-                                <p class="mt-4 text-base-1">{{comment.body}}</p>
+                                <form class="box__write-block flex flex-col" action="{% url 'website:update_comment' post_id=post.id comment_id=comment.id %}" method="POST" x-show="open">
+
+                                    {% csrf_token %}
+                                    <textarea name="body" id="body" rows="4" class="outline-0">{{comment.body}}</textarea>
+
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn--blue btn--small" @click="toggle">cancel</button>
+                                        <button type="submit" class="btn btn--blue btn--small">submit</button>
+                                    </div>
+                                </form>
                             </div>
 
                             <div 
@@ -167,18 +198,23 @@
                                 <ul class="comment__replies__list pl-12 space-y-4" :class="{'pt-12': hasReplies}">
     
                                     {% for reply in comment.replies.all %}
-                                        <li id="comment-{{comment.id}}" class="reply flex items-start gap-4">
+                                        <li id="reply-{{reply.id}}" class="reply flex items-start gap-4">
     
                                             <img class="comment__user rounded-full w-10 h-10" src="{{ comment.author.profile.get_photo_url }}" alt="photo of {{ comment.author.username }}">
     
-                                            <div class="reply__box__text border border-primary-border rounded-md py-2 px-4 w-full flex flex-col bg-black">
+                                            <div class="reply__box border border-primary-border rounded-md py-2 px-4 w-full flex flex-col">
                                                 
-                                                <div class="flex flex-col">
-                                                    <span class="text-sm font-bold">{{ reply.author.username }}</span>
-                                                    <span class="capitalize text-xs">{{reply.created|date:"b"}} {{reply.created.day}}</span>
+                                                <div class="reply__box__header flex">
+
+                                                    <div class="comment__meta flex flex-col">
+                                                        <span class="text-sm font-bold">{{ reply.author.username }}</span>
+                                                        <span class="capitalize text-xs">{{reply.created|date:"b"}} {{reply.created.day}}</span>
+                                                    </div>
+
+                                                    <div class="comment__ctrls"></div>
                                                 </div>
     
-                                                <p class="mt-4 text-base-1">{{reply.body}}</p>
+                                                <p class="reply__box__text mt-4 text-base-1">{{reply.body}}</p>
                                             </div>
                                         </li>
                                     {% endfor %}

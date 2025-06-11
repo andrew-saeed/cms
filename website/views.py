@@ -270,6 +270,18 @@ def reply_on_comment(request, post_id, comment_id):
         reply.comment = comment
         reply.author = request.user
         reply.save()
+    return redirect(f'{comment.post.get_absolute_url()}#reply-{reply.id}')
+
+@login_required
+@require_POST
+def update_comment(request, post_id, comment_id):
+    comment = get_object_or_404(
+        Comment,
+        id=comment_id
+    )
+    form = CommentForm(request.POST, instance=comment)
+    if form.is_valid():
+        form.save()
     return redirect(f'{comment.post.get_absolute_url()}#comment-{comment.id}')
 
 def about(request):
