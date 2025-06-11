@@ -47,10 +47,6 @@
 
 @layer base {
 
-  html {
-    scroll-behavior: smooth;
-  }
-
   form {
     font-size: var(--text-base-1);
     line-height: var(--text-base--line-height);

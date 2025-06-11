@@ -6,10 +6,10 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import OuterRef, Exists, Count, Q
+from django.db.models import OuterRef, Exists, Count, Q, Prefetch
 
-from .models import Post, LikedItem
-from .forms import CommentForm
+from .models import Post, LikedItem, Comment, Reply
+from .forms import CommentForm, ReplyForm
 from taggit.models import Tag
 
 def home(request):
@@ -84,6 +84,7 @@ def posts(request, tag_slug=None):
     })
 
 def posts_single(request, year, month, day, slug):
+    # Get the post
     post = get_object_or_404(
         Post,
         status=Post.Status.PUBLISHED,
@@ -109,8 +110,16 @@ def posts_single(request, year, month, day, slug):
         object_id=post.id
     ).count()
 
-    # Load active comments related to this post
-    comments = post.comments.filter(active=True).select_related('author', 'author__profile')
+    # Load active comments related to this post with their replies
+    comments = post.comments.filter(
+        active=True
+    ).order_by(
+        '-created'
+    ).select_related(
+        'author', 'author__profile'
+    ).prefetch_related(
+        Prefetch('replies', queryset=Reply.objects.select_related('author', 'author__profile'))
+    ).annotate(reply_count=Count('replies'))
 
     return render(request, 'website.posts_single.html', {
         'post': post,
@@ -247,6 +256,21 @@ def comment_on_post(request, id):
         print('comment.body')
         comment.save()
     return redirect(post.get_absolute_url())
+
+@login_required
+@require_POST
+def reply_on_comment(request, post_id, comment_id):
+    comment = get_object_or_404(
+        Comment,
+        id=comment_id
+    )
+    form = ReplyForm(data=request.POST)
+    if form.is_valid():
+        reply = form.save(commit=False)
+        reply.comment = comment
+        reply.author = request.user
+        reply.save()
+    return redirect(f'{comment.post.get_absolute_url()}#comment-{comment.id}')
 
 def about(request):
     return render(request, 'website.about.html')
