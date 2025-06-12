@@ -338,9 +338,17 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('commentBox', () => ({
 
         open: false,
+        openUpdateForm: false,
 
         toggle() {
             this.open = !this.open
+        },
+        toggleUpdateForm() {
+            this.openUpdateForm = !this.openUpdateForm
+            this.open = !this.open
+        },
+        closeUpdateForm() {
+            this.openUpdateForm = false
         }
     }))
 })

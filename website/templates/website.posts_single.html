@@ -127,40 +127,52 @@
 
                             <div class="comment__box border border-primary-border rounded-md py-2 px-4 w-full flex flex-col" x-data="commentBox">
                                 
-                                <div class="box__read-block" x-show="!open">
-
-                                    <div class="comment__box__header flex justify-between">
-                                        
-                                        <div class="box__user-meta flex flex-col">
-                                            <span class="text-sm font-bold">{{comment.author.username}}</span>
-                                            <span class="capitalize text-xs">{{comment.created|date:"b"}} {{comment.created.day}}</span>
-                                        </div>
-    
-                                        {% if request.user.id == comment.author.id %}
-                                            <div class="box__ctrls">
-    
-                                                <svg class="rounded-full p-2 bg-tertiary-bg fill-primary-text cursor-pointer" height="35" width="35" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" @click="toggle">
-                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                                    <g id="SVGRepo_iconCarrier"> 
-                                                        <path class="cls-1" d="M8,6.5A1.5,1.5,0,1,1,6.5,8,1.5,1.5,0,0,1,8,6.5ZM.5,8A1.5,1.5,0,1,0,2,6.5,1.5,1.5,0,0,0,.5,8Zm12,0A1.5,1.5,0,1,0,14,6.5,1.5,1.5,0,0,0,12.5,8Z"></path> 
-                                                    </g>
-                                                </svg>
-    
-                                            </div>
-                                        {% endif %}
+                                <div class="comment__box__header flex justify-between">
+                                    
+                                    <div class="box__user-meta flex flex-col">
+                                        <span class="text-sm font-bold">{{comment.author.username}}</span>
+                                        <span class="capitalize text-xs">{{comment.created|date:"b"}} {{comment.created.day}}</span>
                                     </div>
-    
-                                    <p class="comment__box__body mt-4 text-base-1">{{comment.body}}</p>
+
+                                    {% if request.user.id == comment.author.id %}
+                                        <div class="box__ctrls relative">
+
+                                            <svg class="actions-panel-trigger rounded-full p-2 bg-tertiary-bg fill-primary-text cursor-pointer" height="35" width="35" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" 
+                                                @click="toggle"
+                                            >
+                                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                                <g id="SVGRepo_iconCarrier"> 
+                                                    <path class="cls-1" d="M8,6.5A1.5,1.5,0,1,1,6.5,8,1.5,1.5,0,0,1,8,6.5ZM.5,8A1.5,1.5,0,1,0,2,6.5,1.5,1.5,0,0,0,.5,8Zm12,0A1.5,1.5,0,1,0,14,6.5,1.5,1.5,0,0,0,12.5,8Z"></path> 
+                                                </g>
+                                            </svg>
+
+                                            <ul class="actions-panel absolute top-full right-full z-10
+                                                w-[10.625rem] rounded-md border border-primary-border p-2 bg-primary-bg"
+                                                x-show="open"
+                                            >
+                                                <li>
+                                                    <button class="btn btn--flat btn--small w-full" @click="toggleUpdateForm">update</button>
+                                                </li>
+                                                <li>
+                                                    <form action="" method="POST">
+                                                        <button class="btn btn--flat btn--small w-full" type="submit">delete</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    {% endif %}
                                 </div>
 
-                                <form class="box__write-block flex flex-col" action="{% url 'website:update_comment' post_id=post.id comment_id=comment.id %}" method="POST" x-show="open">
+                                <p class="comment__box__text-read mt-4 text-base-1" x-show="!openUpdateForm">{{comment.body}}</p>
+
+                                <form class="comment__box__text-update mt-4 flex flex-col" action="{% url 'website:update_comment' post_id=post.id comment_id=comment.id %}" method="POST" x-show="openUpdateForm">
 
                                     {% csrf_token %}
                                     <textarea name="body" id="body" rows="4" class="outline-0">{{comment.body}}</textarea>
 
                                     <div class="mt-2">
-                                        <button type="button" class="btn btn--blue btn--small" @click="toggle">cancel</button>
+                                        <button type="button" class="btn btn--blue btn--small" @click="closeUpdateForm">cancel</button>
                                         <button type="submit" class="btn btn--blue btn--small">submit</button>
                                     </div>
                                 </form>
