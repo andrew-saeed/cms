@@ -111,20 +111,27 @@ def posts_single(request, year, month, day, slug):
     ).count()
 
     # Load active comments related to this post with their replies
-    comments = post.comments.filter(
-        active=True
-    ).order_by(
+    comments = post.comments.order_by(
         '-created'
     ).select_related(
         'author', 'author__profile'
     ).prefetch_related(
         Prefetch('replies', queryset=Reply.objects.select_related('author', 'author__profile'))
-    ).annotate(reply_count=Count('replies'))
+    )
+
+    # Count comments and replies
+    totals = post.comments.filter(
+        active=True
+    ).aggregate(
+        total_comments=Count('id', distinct=True),
+        total_replies=Count('replies', filter=Q(replies__active=True))
+    )
 
     return render(request, 'website.posts_single.html', {
         'post': post,
         'is_liked': is_liked,
         'total_likes': total_likes,
+        'total_comments_replies': totals['total_comments'] + totals['total_replies'],
         'comments': comments
     })
 
@@ -283,6 +290,18 @@ def update_comment(request, post_id, comment_id):
     form = CommentForm(request.POST, instance=comment)
     if form.is_valid():
         form.save()
+    return redirect(f'{comment.post.get_absolute_url()}#comment-{comment.id}')
+
+@login_required
+@require_POST
+def active_comment(request, post_id, comment_id):
+    comment = get_object_or_404(
+        Comment,
+        id=comment_id,
+        post_id=post_id
+    )
+    comment.active = request.POST.get('active') == 'true'
+    comment.save()
     return redirect(f'{comment.post.get_absolute_url()}#comment-{comment.id}')
 
 def about(request):

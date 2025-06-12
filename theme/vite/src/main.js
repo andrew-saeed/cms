@@ -325,11 +325,6 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('commentBoxReply', () => ({
 
         open: false,
-        hasReplies: false,
-
-        init() {
-            this.hasReplies = parseInt(this.$el.dataset.hasReplies) > 0 ? true : false
-        },
         toggle() {
             this.open = !this.open
         }

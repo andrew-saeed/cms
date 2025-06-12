@@ -91,7 +91,7 @@
                                         </g>
                                     </svg>
 
-                                    <p class="text-sm text-center">{{comments|length}}</p>
+                                    <p class="text-sm text-center">{{total_comments_replies}}</p>
                                 </a>
                             </div>
                         </div>
@@ -122,7 +122,7 @@
                     <li id="comment-{{comment.id}}" class="comment flex items-start gap-4">
 
                         <img class="comment__user-img rounded-full w-10 h-10" src="{{ comment.author.profile.get_photo_url }}" alt="photo of {{ comment.author.username }}">
-
+                        
                         <div class="comment__section w-full">
 
                             <div class="comment__box border border-primary-border rounded-md py-2 px-4 w-full flex flex-col" x-data="commentBox">
@@ -134,7 +134,7 @@
                                         <span class="capitalize text-xs">{{comment.created|date:"b"}} {{comment.created.day}}</span>
                                     </div>
 
-                                    {% if request.user.id == comment.author.id %}
+                                    {% if request.user.id == comment.author.id and comment.active %}
                                         <div class="box__ctrls relative">
 
                                             <svg class="actions-panel-trigger rounded-full p-2 bg-tertiary-bg fill-primary-text cursor-pointer" height="35" width="35" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" 
@@ -150,12 +150,16 @@
                                             <ul class="actions-panel absolute top-full right-full z-10
                                                 w-[10.625rem] rounded-md border border-primary-border p-2 bg-primary-bg"
                                                 x-show="open"
+                                                @click.outside="toggle"
+                                                x-cloak
                                             >
                                                 <li>
                                                     <button class="btn btn--flat btn--small w-full" @click="toggleUpdateForm">update</button>
                                                 </li>
                                                 <li>
-                                                    <form action="" method="POST">
+                                                    <form action="{% url 'website:active_comment' post_id=post.id comment_id=comment.id %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <input type="checkbox" name="active" id="active" value="false" checked hidden />
                                                         <button class="btn btn--flat btn--small w-full" type="submit">delete</button>
                                                     </form>
                                                 </li>
@@ -164,27 +168,39 @@
                                     {% endif %}
                                 </div>
 
-                                <p class="comment__box__text-read mt-4 text-base-1" x-show="!openUpdateForm">{{comment.body}}</p>
+                                {% if comment.active %}
+                                    <p class="comment__box__text-read mt-4 text-base-1" x-show="!openUpdateForm">{{comment.body}}</p>
 
-                                <form class="comment__box__text-update mt-4 flex flex-col" action="{% url 'website:update_comment' post_id=post.id comment_id=comment.id %}" method="POST" x-show="openUpdateForm">
+                                    <form class="comment__box__text-update mt-4 flex flex-col" action="{% url 'website:update_comment' post_id=post.id comment_id=comment.id %}" method="POST" x-show="openUpdateForm" x-cloak>
 
-                                    {% csrf_token %}
-                                    <textarea name="body" id="body" rows="4" class="outline-0">{{comment.body}}</textarea>
+                                        {% csrf_token %}
+                                        <textarea name="body" id="body" rows="4" class="outline-0">{{comment.body}}</textarea>
 
-                                    <div class="mt-2">
-                                        <button type="button" class="btn btn--blue btn--small" @click="closeUpdateForm">cancel</button>
-                                        <button type="submit" class="btn btn--blue btn--small">submit</button>
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn--blue btn--small" @click="closeUpdateForm">cancel</button>
+                                            <button type="submit" class="btn btn--blue btn--small">submit</button>
+                                        </div>
+                                    </form>
+                                {% else %}
+                                    <div class="my-2 rounded-md border border-primary-border p-1 flex justify-center items-center gap-2 capitalize font-bold text-center">
+                                        <span>deleted by user</span>
+                                        {% if request.user.id == comment.author.id %}
+                                            <form method="POST" action="{% url 'website:active_comment' post_id=post.id comment_id=comment.id %}">
+                                                {% csrf_token %}
+                                                <input type="checkbox" name="active" id="active" value="true" checked hidden />
+                                                <button type="submit" class="btn btn--blue btn--small">restore</button>
+                                            </form>
+                                        {% endif %}
                                     </div>
-                                </form>
+                                {% endif %}
                             </div>
 
                             <div 
                                 class="comment__reply__box"
-                                data-has-replies="{{comment.reply_count}}"
                                 x-data="commentBoxReply"
                             >
 
-                                <form class="ml-12 mt-6 flex flex-col" action="{% url 'website:reply_on_comment' post_id=post.id comment_id=comment.id %}" method="POST" x-show="open">
+                                <form class="ml-12 mt-6 flex flex-col" action="{% url 'website:reply_on_comment' post_id=post.id comment_id=comment.id %}" method="POST" x-show="open" x-cloak>
                                     <textarea rows="4" cols="8" name="body" id="body" class="border border-primary-border p-2 w-full bg-black text-base-1"></textarea>
                                     <div class="mt-2 flex gap-4">
                                         {% csrf_token %}
@@ -207,7 +223,7 @@
                                     </g>
                                 </svg>
 
-                                <ul class="comment__replies__list pl-12 space-y-4" :class="{'pt-12': hasReplies}">
+                                <ul class="comment__replies__list pl-12 space-y-4 has-[li]:pt-12">
     
                                     {% for reply in comment.replies.all %}
                                         <li id="reply-{{reply.id}}" class="reply flex items-start gap-4">
