@@ -40,7 +40,7 @@
 
                         <div 
                             class="ctrls-list 
-                            absolute -top-[69px] lg:top-[120px] lg:-left-[68px] max-lg:w-full
+                            absolute -top-[68px] lg:top-[120px] lg:-left-[68px] max-lg:w-full
                             lg:rounded-md lg:border lg:border-primary-border p-2 
                             flex lg:flex-col justify-center gap-4 
                             bg-primary-bg max-lg:bg-black/80"
@@ -118,7 +118,7 @@
 
                 {% for comment in comments %}
 
-                    <li id="comment-{{comment.id}}" class="comment flex items-start gap-4">
+                    <li id="comment-{{comment.id}}" class="comment flex max-md:flex-col items-start gap-4">
 
                         <img class="comment__user-img rounded-full w-10 h-10" src="{{ comment.author.profile.get_photo_url }}" alt="photo of {{ comment.author.username }}">
                         
@@ -208,7 +208,7 @@
                                             </div>
                                         </form>
     
-                                        <svg class="reply-toggler mt-6" width="24" height="24" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000" x-show="!open" @click="toggle">
+                                        <svg class="reply-toggler mt-6 cursor-pointer" width="24" height="24" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000" x-show="!open" @click="toggle">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                             <g id="SVGRepo_iconCarrier"> 
@@ -224,10 +224,10 @@
                                     </div>
                                 {% endif %}
 
-                                <ul class="comment__replies__list pl-12 space-y-4 has-[li]:pt-12">
+                                <ul class="comment__replies__list pl-6 md:pl-12 space-y-4 has-[li]:pt-12">
     
                                     {% for reply in comment.replies.all %}
-                                        <li id="reply-{{reply.id}}" class="reply flex items-start gap-4">
+                                        <li id="reply-{{reply.id}}" class="reply flex max-md:flex-col items-start gap-4">
     
                                             <img class="reply__user-img rounded-full w-10 h-10" src="{{ comment.author.profile.get_photo_url }}" alt="photo of {{ comment.author.username }}">
     
@@ -265,7 +265,7 @@
                                                                         <button class="btn btn--flat btn--small w-full" @click="toggleUpdateForm">update</button>
                                                                     </li>
                                                                     <li>
-                                                                        <form action="{% url 'website:active_comment' post_id=post.id comment_id=comment.id %}" method="POST">
+                                                                        <form action="{% url 'website:active_reply' comment_id=comment.id reply_id=reply.id %}" method="POST">
                                                                             {% csrf_token %}
                                                                             <input type="checkbox" name="active" id="active" value="false" checked hidden />
                                                                             <button class="btn btn--flat btn--small w-full" type="submit">delete</button>
@@ -290,6 +290,17 @@
                                                                 <button type="submit" class="btn btn--blue btn--small">submit</button>
                                                             </div>
                                                         </form>
+                                                    {% else %}
+                                                        <div class="my-2 rounded-md border border-primary-border p-1 flex justify-center items-center gap-2 capitalize font-bold text-center">
+                                                            <span>deleted by user</span>
+                                                            {% if request.user.id == reply.author.id %}
+                                                                <form method="POST" action="{% url 'website:active_reply' comment_id=comment.id reply_id=reply.id %}">
+                                                                    {% csrf_token %}
+                                                                    <input type="checkbox" name="active" id="active" value="true" checked hidden />
+                                                                    <button type="submit" class="btn btn--blue btn--small">restore</button>
+                                                                </form>
+                                                            {% endif %}
+                                                        </div>
                                                     {% endif %}
                                                 </div>
                                             </div>

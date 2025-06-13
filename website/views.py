@@ -297,6 +297,7 @@ def update_comment(request, post_id, comment_id):
 @login_required
 @require_POST
 def active_comment(request, post_id, comment_id):
+    print('active_comment')
     comment = get_object_or_404(
         Comment,
         id=comment_id,
@@ -317,6 +318,19 @@ def update_reply(request, comment_id, reply_id):
     form = ReplyForm(request.POST, instance=reply)
     if form.is_valid():
         form.save()
+    return redirect(f'{reply.comment.post.get_absolute_url()}#reply-{reply.id}')
+
+@login_required
+@require_POST
+def active_reply(request, comment_id, reply_id):
+    print('active_reply')
+    reply = get_object_or_404(
+        Reply,
+        id=reply_id,
+        comment_id=comment_id
+    )
+    reply.active = request.POST.get('active') == 'true'
+    reply.save()
     return redirect(f'{reply.comment.post.get_absolute_url()}#reply-{reply.id}')
 
 def about(request):
