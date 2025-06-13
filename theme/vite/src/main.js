@@ -322,15 +322,7 @@ document.addEventListener('alpine:init', () => {
         }
     }))
 
-    Alpine.data('commentBoxReply', () => ({
-
-        open: false,
-        toggle() {
-            this.open = !this.open
-        }
-    }))
-
-    Alpine.data('commentBox', () => ({
+    Alpine.data('commentReplyBoxCtrl', () => ({
 
         open: false,
         openUpdateForm: false,

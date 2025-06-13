@@ -277,7 +277,9 @@ def reply_on_comment(request, post_id, comment_id):
         reply.comment = comment
         reply.author = request.user
         reply.save()
-    return redirect(f'{comment.post.get_absolute_url()}#reply-{reply.id}')
+        return redirect(f'{comment.post.get_absolute_url()}#reply-{reply.id}')
+    else:
+        return redirect(comment.post.get_absolute_url())
 
 @login_required
 @require_POST
@@ -303,6 +305,19 @@ def active_comment(request, post_id, comment_id):
     comment.active = request.POST.get('active') == 'true'
     comment.save()
     return redirect(f'{comment.post.get_absolute_url()}#comment-{comment.id}')
+
+@login_required
+@require_POST
+def update_reply(request, comment_id, reply_id):
+    reply = get_object_or_404(
+        Reply,
+        id=reply_id,
+        comment_id=comment_id
+    )
+    form = ReplyForm(request.POST, instance=reply)
+    if form.is_valid():
+        form.save()
+    return redirect(f'{reply.comment.post.get_absolute_url()}#reply-{reply.id}')
 
 def about(request):
     return render(request, 'website.about.html')
