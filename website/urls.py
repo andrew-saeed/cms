@@ -20,6 +20,7 @@ urlpatterns = [
     path('comments/<int:comment_id>/replies/<int:reply_id>/update', views.update_reply, name='update_reply'),
     path('comments/<int:comment_id>/replies/<int:reply_id>/active', views.active_reply, name='active_reply'),
     path('comments/like/', views.like_comment, name='like_comment'),
+    path('replies/like/', views.like_reply, name='like_reply'),
     path('about/', views.about, name='about'),
     path('search/', views.search, name='search'),
 ]

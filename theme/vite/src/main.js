@@ -381,6 +381,49 @@ document.addEventListener('alpine:init', () => {
             this.pending = false
         }
     }))
+
+    Alpine.data('likeReply', () => ({
+
+        replyId: null,
+        csrftoken: null,
+        likeStatus: null,
+        pending: null,
+        totalLikes: 0,
+
+        init(){
+            this.replyId = this.$el.dataset.replyId
+            this.csrftoken = Cookies.get('csrftoken')
+            this.likeStatus = this.$el.dataset.isLiked === 'True' ? 'fill' : 'empty'
+            this.totalLikes = parseInt(this.$el.dataset.totalLikes)
+        },
+        async toggle(action='') {
+
+            if(this.pending) return
+
+            this.pending = true
+
+            const formData = new FormData()
+            formData.append('id', this.replyId)
+            formData.append('action', action)
+
+            const result = await fetch('/replies/like/', {
+                method: 'POST',
+                headers: {'X-CSRFToken': this.csrftoken},
+                mode:'same-origin',
+                body: formData
+            })
+
+            const res = await result.json()
+            if(res.action == 'like') {
+                this.likeStatus = 'fill'
+                this.totalLikes += 1
+            } else {
+                this.likeStatus = 'empty'
+                this.totalLikes -= 1
+            }
+            this.pending = false
+        }
+    }))
 })
 
 Alpine.start()
