@@ -94,15 +94,27 @@ def posts_single(request, year, month, day, slug):
         publish__day=day,
     )
 
-    # Check if user liked this post
-    is_liked = False
+    is_liked_post = False
+    liked_comment_ids = set()
     if request.user.is_authenticated:
+        # Check if user liked the post
         content_type = ContentType.objects.get_for_model(Post)
-        is_liked = LikedItem.objects.filter(
+        is_liked_post = LikedItem.objects.filter(
             user=request.user,
             content_type=content_type,
             object_id=post.id
         ).exists()
+
+        # Check liked comments for the authed user
+        comment_ct = ContentType.objects.get_for_model(Comment)
+        comment_ids = post.comments.values_list('id', flat=True)
+        liked_comment_ids = set(
+            LikedItem.objects.filter(
+                user=request.user,
+                content_type=comment_ct,
+                object_id__in=comment_ids
+            ).values_list('object_id', flat=True)
+        )
 
     # Calculate total likes for this post
     total_likes = LikedItem.objects.filter(
@@ -116,7 +128,12 @@ def posts_single(request, year, month, day, slug):
     ).select_related(
         'author', 'author__profile'
     ).prefetch_related(
-        Prefetch('replies', queryset=Reply.objects.select_related('author', 'author__profile'))
+        Prefetch(
+            'replies', 
+            queryset=Reply.objects.select_related('author', 'author__profile'))
+    ).annotate(
+        likes_count=Count('likes', distinct=True),
+        replies_count=Count('replies', filter=Q(replies__active=True), distinct=True)
     )
 
     # Count comments and replies
@@ -129,10 +146,11 @@ def posts_single(request, year, month, day, slug):
 
     return render(request, 'website.posts_single.html', {
         'post': post,
-        'is_liked': is_liked,
+        'is_liked_post': is_liked_post,
         'total_likes': total_likes,
         'total_comments_replies': totals['total_comments'] + totals['total_replies'],
-        'comments': comments
+        'comments': comments,
+        'liked_comment_ids': liked_comment_ids
     })
 
 @login_required
@@ -332,6 +350,29 @@ def active_reply(request, comment_id, reply_id):
     reply.active = request.POST.get('active') == 'true'
     reply.save()
     return redirect(f'{reply.comment.post.get_absolute_url()}#reply-{reply.id}')
+
+@login_required
+@require_POST
+def like_comment(request):
+    action = request.POST.get('action')
+    comment_id = request.POST.get('id')
+
+    content_type = ContentType.objects.get_for_model(Comment)
+
+    if action == 'like':
+        LikedItem.objects.get_or_create(
+            user=request.user,
+            content_type=content_type,
+            object_id=comment_id
+        )
+    else:
+        LikedItem.objects.filter(
+            user=request.user,
+            content_type=content_type,
+            object_id=comment_id
+        ).delete()
+
+    return JsonResponse({'action':action})
 
 def about(request):
     return render(request, 'website.about.html')

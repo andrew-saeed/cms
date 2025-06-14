@@ -303,7 +303,7 @@ document.addEventListener('alpine:init', () => {
             formData.append('id', this.postId)
             formData.append('action', action)
 
-            const result = await fetch('/posts/like_post/', {
+            const result = await fetch('/posts/like/', {
                 method: 'POST',
                 headers: {'X-CSRFToken': this.csrftoken},
                 mode:'same-origin',
@@ -336,6 +336,49 @@ document.addEventListener('alpine:init', () => {
         },
         closeUpdateForm() {
             this.openUpdateForm = false
+        }
+    }))
+
+    Alpine.data('likeComment', () => ({
+
+        commentId: null,
+        csrftoken: null,
+        likeStatus: null,
+        pending: null,
+        totalLikes: 0,
+
+        init(){
+            this.commentId = this.$el.dataset.commentId
+            this.csrftoken = Cookies.get('csrftoken')
+            this.likeStatus = this.$el.dataset.isLiked === 'True' ? 'fill' : 'empty'
+            this.totalLikes = parseInt(this.$el.dataset.totalLikes)
+        },
+        async toggle(action='') {
+
+            if(this.pending) return
+
+            this.pending = true
+
+            const formData = new FormData()
+            formData.append('id', this.commentId)
+            formData.append('action', action)
+
+            const result = await fetch('/comments/like/', {
+                method: 'POST',
+                headers: {'X-CSRFToken': this.csrftoken},
+                mode:'same-origin',
+                body: formData
+            })
+
+            const res = await result.json()
+            if(res.action == 'like') {
+                this.likeStatus = 'fill'
+                this.totalLikes += 1
+            } else {
+                this.likeStatus = 'empty'
+                this.totalLikes -= 1
+            }
+            this.pending = false
         }
     }))
 })

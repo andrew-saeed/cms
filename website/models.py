@@ -68,6 +68,8 @@ class Comment(models.Model):
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
 
+    likes = GenericRelation(LikedItem, related_query_name='likeditem')
+
     class Meta:
         ordering = ['-created']
         indexes = [
