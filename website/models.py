@@ -100,3 +100,15 @@ class Reply(models.Model):
         indexes = [
             models.Index(fields=['created'])
         ]
+
+class Bookmark(models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='bookmarks'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='bookmarks'
+    )

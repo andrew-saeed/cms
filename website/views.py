@@ -6,9 +6,9 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import OuterRef, Exists, Count, Q, Prefetch
+from django.db.models import OuterRef, Exists, Count, Q, Prefetch, Value, BooleanField
 
-from .models import Post, LikedItem, Comment, Reply
+from .models import Post, LikedItem, Comment, Reply, Bookmark
 from .forms import CommentForm, ReplyForm
 from taggit.models import Tag
 
@@ -19,64 +19,75 @@ def posts(request, tag_slug=None):
     """
     Posts list view:
     - Supports filtering by tag
-    - Annotates whether current user liked each post
-    - Annotates total likes count per post
+    - Annotates whether current user liked/bookmarked each post (if authenticated)
+    - Annotates total likes and comment count
     - Paginates results
     - Supports partial load (AJAX infinite scroll)
     """
 
-    # ContentType for Post model
-    content_type = ContentType.objects.get_for_model(Post)
-
-    # Subquery: whether current user liked each post
-    liked_subquery = LikedItem.objects.filter(
-        user=request.user,
-        content_type=content_type,
-        object_id=OuterRef('pk')
-    )
-
-    # Base queryset: published posts + annotations
+    # Base queryset
     posts_queryset = Post.published.select_related(
         'author',
         'author__profile'
     ).prefetch_related(
         'tags'
-    ).annotate(
-        # is_liked: True/False if user liked post
-        is_liked=Exists(liked_subquery),
-        # likes_count: total number of likes for post
+    )
+
+    # ContentType for Post model
+    content_type = ContentType.objects.get_for_model(Post)
+
+    if request.user.is_authenticated:
+        # Subquery: liked posts
+        liked_subquery = LikedItem.objects.filter(
+            user=request.user,
+            content_type=content_type,
+            object_id=OuterRef('pk')
+        )
+
+        # Subquery: bookmarked posts
+        bookmark_subquery = Bookmark.objects.filter(
+            user=request.user,
+            post=OuterRef('pk')
+        )
+
+        posts_queryset = posts_queryset.annotate(
+            is_liked=Exists(liked_subquery),
+            is_bookmarked=Exists(bookmark_subquery)
+        )
+    else:
+        # Anonymous users: mark as False
+        posts_queryset = posts_queryset.annotate(
+            is_liked=Value(False, output_field=BooleanField()),
+            is_bookmarked=Value(False, output_field=BooleanField())
+        )
+
+    # Add common annotations
+    posts_queryset = posts_queryset.annotate(
         likes_count=Count('likes', distinct=True),
-        # comments_count: total number of comments for post
-        comments_count=Count('comments', filter=Q(comments__active=True), distinct=True)
+        comments_count=Count('comments', filter=Q(comments__active=True), distinct=True),
+        bookmarks_count=Count('bookmarks', distinct=True)
     ).order_by('-publish')
 
-    # Filter by tag if tag_slug is provided
+    # Filter by tag if applicable
     current_tag = None
     if tag_slug:
         current_tag = get_object_or_404(Tag, slug=tag_slug)
         posts_queryset = posts_queryset.filter(tags__in=[current_tag])
 
-    # Pagination settings
+    # Pagination
     page_number = request.GET.get('page', 1)
     list_paginated = request.GET.get('list_paginated', 0)
-
-    posts_paginator = Paginator(posts_queryset, 5)
+    paginator = Paginator(posts_queryset, 5)
 
     try:
-        posts_page = posts_paginator.page(page_number)
+        posts_page = paginator.page(page_number)
     except EmptyPage:
-        # If infinite scroll: return empty response on overflow
-        if list_paginated:
-            return HttpResponse('')
+        return HttpResponse('') if list_paginated else paginator.page(1)
     except PageNotAnInteger:
-        # Fallback to first page
-        posts_page = posts_paginator.page(1)
+        posts_page = paginator.page(1)
 
-    # Decide which template to render
-    if list_paginated:
-        template = 'partials/posts_list.html'
-    else:
-        template = 'website.posts.html'
+    # Template
+    template = 'partials/posts_list.html' if list_paginated else 'website.posts.html'
 
     return render(request, template, {
         'posts': posts_page,
@@ -414,6 +425,30 @@ def like_reply(request):
         ).delete()
 
     return JsonResponse({'action':action})
+
+@login_required
+@require_POST
+def bookmark_post(request, id):
+    action = request.POST.get('action')
+
+    post = get_object_or_404(
+        Post,
+        id=id,
+        status=Post.Status.PUBLISHED
+    )
+
+    if action == 'bookmark':
+        Bookmark.objects.get_or_create(
+            post=post,
+            user=request.user
+        )
+    else:
+        Bookmark.objects.filter(
+            post=post,
+            user=request.user
+        ).delete()
+
+    return JsonResponse({'action': action})
 
 def about(request):
     return render(request, 'website.about.html')
