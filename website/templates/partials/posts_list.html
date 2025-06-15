@@ -34,9 +34,9 @@
             {% endfor %}
         </ul>
 
-        <div class="post__footer-box flex gap-4 max-md:flex-col md:items-end md:justify-between">
+        <div class="post__footer-box mt-6 flex gap-4 max-md:flex-col md:items-center">
             
-            <div class="post__ctrls mt-6 flex max-md:justify-center gap-2">
+            <div class="post__ctrls flex max-md:justify-center gap-2">
     
                 <div 
                     class="like__trigger rounded-md p-2 flex items-end gap-1" 
@@ -105,7 +105,11 @@
                 </div>
             </div>
 
-            <div class="p-2 text-center">3 min read</div>
+            <div class="text-center">
+                <span  class="rounded-full px-2 bg-tertiary-bg !text-sm text-center">
+                    3 min read
+                </span>
+            </div>
         </div>
     </li>
 {% endfor %}

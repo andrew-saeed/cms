@@ -106,9 +106,16 @@ def posts_single(request, year, month, day, slug):
     )
 
     is_liked_post = False
+    is_bookmarked = False
     liked_comment_ids = set()
     liked_reply_ids = set()
     if request.user.is_authenticated:
+        # Check if user bookmarked the post
+        is_bookmarked = Bookmark.objects.filter(
+            user=request.user,
+            post=post
+        ).exists()
+
         # Check if user liked the post
         content_type = ContentType.objects.get_for_model(Post)
         is_liked_post = LikedItem.objects.filter(
@@ -145,6 +152,9 @@ def posts_single(request, year, month, day, slug):
         object_id=post.id
     ).count()
 
+    # Calculate total bookmarks
+    total_bookmarks = post.bookmarks.count()
+
     # Load active comments related to this post with their replies
     reply_qs = Reply.objects.select_related(
         'author', 'author__profile'
@@ -175,8 +185,10 @@ def posts_single(request, year, month, day, slug):
     return render(request, 'website.posts_single.html', {
         'post': post,
         'is_liked_post': is_liked_post,
+        'is_bookmarked': is_bookmarked,
         'total_likes': total_likes,
         'total_comments_replies': totals['total_comments'] + totals['total_replies'],
+        'total_bookmarks': total_bookmarks,
         'comments': comments,
         'liked_comment_ids': liked_comment_ids,
         'liked_reply_ids': liked_reply_ids

@@ -60,6 +60,7 @@
                     >
 
                         <div 
+                            class="post__like"
                             data-is-liked="{{is_liked_post}}" 
                             data-item-id="{{post.id}}" 
                             x-data="likeItem('/posts/like/')"
@@ -86,7 +87,7 @@
                             <p class="text-sm text-center" x-text="totalLikes"></p>
                         </div>
 
-                        <div>
+                        <div class="post__comment">
 
                             <a href="#comments">
                                 <svg width="32" height="32" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000">
@@ -105,6 +106,33 @@
 
                                 <p class="text-sm text-center">{{total_comments_replies}}</p>
                             </a>
+                        </div>
+
+                        <div 
+                            class="post__bookmark" 
+                            x-data="postBookmark"
+                            data-post-id="{{post.id}}"
+                            data-status="{{is_bookmarked}}"
+                            data-total-bookmarks="{{total_bookmarks}}"
+                        >
+
+                            <svg class="cursor-pointer" x-show="!open" x-cloak @click="bookmark('bookmark')" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"> 
+                                    <path class="stroke-blue-400" d="M5 6.2C5 5.07989 5 4.51984 5.21799 4.09202C5.40973 3.71569 5.71569 3.40973 6.09202 3.21799C6.51984 3 7.07989 3 8.2 3H15.8C16.9201 3 17.4802 3 17.908 3.21799C18.2843 3.40973 18.5903 3.71569 18.782 4.09202C19 4.51984 19 5.07989 19 6.2V21L12 16L5 21V6.2Z" stroke-width="2" stroke-linejoin="round"></path> 
+                                </g>
+                            </svg>
+
+                            <svg class="cursor-pointer" x-show="open" x-cloak @click="bookmark('')" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"> 
+                                    <path class="fill-blue-400" d="M5 6.2C5 5.07989 5 4.51984 5.21799 4.09202C5.40973 3.71569 5.71569 3.40973 6.09202 3.21799C6.51984 3 7.07989 3 8.2 3H15.8C16.9201 3 17.4802 3 17.908 3.21799C18.2843 3.40973 18.5903 3.71569 18.782 4.09202C19 4.51984 19 5.07989 19 6.2V21L12 16L5 21V6.2Z" stroke-width="2" stroke-linejoin="round"></path> 
+                                </g>
+                            </svg>
+
+                            <p x-text="totalBookmarks" class="text-sm text-center"></p>
                         </div>
                     </div>
                 </div>
