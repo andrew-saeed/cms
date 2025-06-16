@@ -109,6 +109,8 @@ def posts_single(request, year, month, day, slug):
     is_bookmarked = False
     liked_comment_ids = set()
     liked_reply_ids = set()
+    post_ct = ContentType.objects.get_for_model(Post)
+
     if request.user.is_authenticated:
         # Check if user bookmarked the post
         is_bookmarked = Bookmark.objects.filter(
@@ -117,10 +119,9 @@ def posts_single(request, year, month, day, slug):
         ).exists()
 
         # Check if user liked the post
-        content_type = ContentType.objects.get_for_model(Post)
         is_liked_post = LikedItem.objects.filter(
             user=request.user,
-            content_type=content_type,
+            content_type=post_ct,
             object_id=post.id
         ).exists()
 
@@ -148,7 +149,7 @@ def posts_single(request, year, month, day, slug):
 
     # Calculate total likes for this post
     total_likes = LikedItem.objects.filter(
-        content_type=content_type,
+        content_type=post_ct,
         object_id=post.id
     ).count()
 
