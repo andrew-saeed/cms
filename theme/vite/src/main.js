@@ -314,28 +314,34 @@ document.addEventListener('alpine:init', () => {
 
             if(this.pending) return
 
-            this.pending = true
+            try {
 
-            const formData = new FormData()
-            formData.append('id', this.itemId)
-            formData.append('action', action)
+                this.pending = true
 
-            const result = await fetch(url, {
-                method: 'POST',
-                headers: {'X-CSRFToken': this.csrftoken},
-                mode:'same-origin',
-                body: formData
-            })
+                const formData = new FormData()
+                formData.append('id', this.itemId)
+                formData.append('action', action)
 
-            const res = await result.json()
-            if(res.action == 'like') {
-                this.likeStatus = 'fill'
-                this.totalLikes += 1
-            } else {
-                this.likeStatus = 'empty'
-                this.totalLikes -= 1
+                const result = await fetch(url, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': this.csrftoken},
+                    mode:'same-origin',
+                    body: formData
+                })
+    
+                const res = await result.json()
+                if(res.action == 'like') {
+                    this.likeStatus = 'fill'
+                    this.totalLikes += 1
+                } else {
+                    this.likeStatus = 'empty'
+                    this.totalLikes -= 1
+                }
+                this.pending = false
+            } catch {
+                window.location.assign('/account/login/')
             }
-            this.pending = false
+
         }
     }))
 
@@ -357,27 +363,32 @@ document.addEventListener('alpine:init', () => {
 
             if(this.pending) return
 
-            this.pending = true
+            try {
 
-            const formData = new FormData()
-            formData.append('action', action)
-
-            const result = await fetch(`/posts/${this.postId}/bookmark/`, {
-                method: 'POST',
-                headers: {'X-CSRFToken': this.csrftoken},
-                mode:'same-origin',
-                body: formData
-            })
-
-            const res = await result.json()
-            if(res.action == 'bookmark') {
-                this.open = true
-                this.totalBookmarks += 1
-            } else {
-                this.open = false
-                this.totalBookmarks -= 1
+                this.pending = true
+    
+                const formData = new FormData()
+                formData.append('action', action)
+    
+                const result = await fetch(`/posts/${this.postId}/bookmark/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': this.csrftoken},
+                    mode:'same-origin',
+                    body: formData
+                })
+    
+                const res = await result.json()
+                if(res.action == 'bookmark') {
+                    this.open = true
+                    this.totalBookmarks += 1
+                } else {
+                    this.open = false
+                    this.totalBookmarks -= 1
+                }
+                this.pending = false
+            } catch {
+                window.location.assign('/account/login/')
             }
-            this.pending = false
         }
     }))
 })
