@@ -196,7 +196,7 @@ document.addEventListener('alpine:init', () => {
             formData.append('body', this.editor.getMarkdown())
             formData.append('tags', allTagsStr)
 
-            const res = await fetch('/posts/new', {
+            const res = await fetch('/posts/new/', {
                 method: 'POST',
                 headers: {'X-CSRFToken': this.csrftoken},
                 mode:'same-origin',
@@ -308,7 +308,7 @@ document.addEventListener('alpine:init', () => {
             this.itemId = this.$el.dataset.itemId
             this.csrftoken = Cookies.get('csrftoken')
             this.likeStatus = this.$el.dataset.isLiked === 'True' ? 'fill' : 'empty'
-            this.totalLikes = parseInt(this.$el.dataset.totalLikes)
+            this.totalLikes = parseInt(this.$el.dataset.totalLikes) || 0
         },
         async toggle(action='') {
 
@@ -350,7 +350,7 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.postId = this.$el.dataset.postId
             this.csrftoken = Cookies.get('csrftoken')
-            this.totalBookmarks = parseInt(this.$el.dataset.totalBookmarks)
+            this.totalBookmarks = parseInt(this.$el.dataset.totalBookmarks) || 0
             this.open = this.$el.dataset.status == 'True'
         },
         async bookmark(action) {

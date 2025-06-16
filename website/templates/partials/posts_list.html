@@ -40,7 +40,7 @@
     
                 <div 
                     class="like__trigger rounded-md p-2 flex items-end gap-1" 
-                    x-data="likeItem('/posts/like/')"
+                    x-data="likeItem('/posts/{{post.id}}/like/')"
                     data-is-liked="{{post.is_liked}}" 
                     data-item-id="{{post.id}}" 
                     data-total-likes="{{post.likes_count}}"

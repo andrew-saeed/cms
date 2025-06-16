@@ -7,6 +7,11 @@ register = template.Library()
 def days_since(value):
     if not value:
         return ""
+    
     now = datetime.now(timezone.utc)
     delta = now - value
-    return f"{delta.days} days"
+
+    if delta.days <= 0:
+        return 'today'
+    else:
+        return f"{delta.days} days"

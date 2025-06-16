@@ -285,9 +285,8 @@ def post_publish(request, id):
 
 @login_required
 @require_POST
-def like_post(request):
+def like_post(request, id):
     action = request.POST.get('action')
-    post_id = request.POST.get('id')
 
     content_type = ContentType.objects.get_for_model(Post)
 
@@ -295,13 +294,13 @@ def like_post(request):
         LikedItem.objects.get_or_create(
             user=request.user,
             content_type=content_type,
-            object_id=post_id
+            object_id=id
         )
     else:
         LikedItem.objects.filter(
             user=request.user,
             content_type=content_type,
-            object_id=post_id
+            object_id=id
         ).delete()
 
     return JsonResponse({'action':action})
