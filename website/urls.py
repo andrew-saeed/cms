@@ -4,8 +4,7 @@ from . import views
 app_name = 'website'
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('posts/', views.posts, name='posts'),
+    path('', views.posts, name='home'),
     path('posts/new/', views.posts_new, name='posts_new'),
     path('posts/tag/<slug:tag_slug>', views.posts, name='posts_by_tag'),
     path('posts/<int:year>/<int:month>/<int:day>/<slug:slug>/', views.posts_single, name='posts_single'),
@@ -22,6 +21,7 @@ urlpatterns = [
     path('comments/<int:comment_id>/replies/<int:reply_id>/active', views.active_reply, name='active_reply'),
     path('comments/like/', views.like_comment, name='like_comment'),
     path('replies/like/', views.like_reply, name='like_reply'),
+    path('tags/', views.tags, name='tags'),
     path('about/', views.about, name='about'),
     path('search/', views.search, name='search'),
 ]

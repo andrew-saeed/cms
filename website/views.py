@@ -12,9 +12,6 @@ from .models import Post, LikedItem, Comment, Reply, Bookmark
 from .forms import CommentForm, ReplyForm
 from taggit.models import Tag
 
-def home(request):
-    return render(request, 'website.home.html')
-
 def posts(request, tag_slug=None):
     """
     Posts list view:
@@ -467,3 +464,6 @@ def about(request):
 
 def search(request):
     return render(request, 'website.search.html')
+
+def tags(request):
+    return render(request, 'website.tags.html')

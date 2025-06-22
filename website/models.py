@@ -1,3 +1,6 @@
+from re import findall
+from math import ceil
+
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
@@ -50,6 +53,12 @@ class Post(models.Model):
             self.publish.day,
             self.slug
         ])
+    
+    def reading_time(self):
+        word_count = len(findall(r'\w+', self.body))
+        reading_speed_wpm = 200
+        minutes = ceil(word_count / reading_speed_wpm)
+        return minutes
 
 class Comment(models.Model):
     post = models.ForeignKey(
